@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mateo's Faith Hub</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Faith Hub">
+<meta name="theme-color" content="#d4a843">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d0f;--surface:#151518;--surface2:#1c1c22;--border:rgba(255,255,255,0.07);--gold:#d4a843;--gold2:#f0c96a;--gold-dim:rgba(212,168,67,0.13);--text:#e8e4dc;--muted:rgba(232,228,220,0.45);--green:#5a9e6e;--accent:#5b8fa8;--highlight-yellow:rgba(255,220,50,0.28);--highlight-blue:rgba(91,143,168,0.3);--highlight-green:rgba(90,158,110,0.28);--highlight-pink:rgba(220,100,120,0.28);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,15,0.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;}
+.nav-logo{font-family:'Cinzel',serif;font-size:.92rem;color:var(--gold);letter-spacing:.08em;}
+.nav-links{display:flex;gap:2px;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.73rem;letter-spacing:.04em;padding:6px 10px;border-radius:20px;transition:all .2s;cursor:pointer;user-select:none;}
+.nav-links a:hover,.nav-links a.active{color:var(--gold);background:var(--gold-dim);}
+.page{display:none;padding-top:66px;min-height:100vh;}
+.page.active{display:block;}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--surface2);border:1px solid var(--border);padding:10px 20px;border-radius:30px;font-size:.82rem;color:var(--text);opacity:0;pointer-events:none;transition:all .3s;z-index:300;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.quiz-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;}
+.quiz-overlay.open{display:flex;}
+.quiz-box{background:var(--surface);border:1px solid rgba(212,168,67,.3);border-radius:14px;padding:30px 26px;max-width:480px;width:100%;}
+.quiz-box h3{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);margin-bottom:4px;}
+.quiz-ref{font-size:.77rem;color:var(--muted);margin-bottom:16px;}
+.quiz-ta{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:1rem;font-family:'Crimson Pro',serif;resize:vertical;min-height:80px;}
+.quiz-ta:focus{outline:none;border-color:var(--gold);}
+.quiz-result{margin-top:11px;font-size:.87rem;padding:9px 12px;border-radius:7px;display:none;}
+.quiz-result.ok{background:rgba(90,158,110,.14);color:var(--green);}
+.quiz-result.no{background:rgba(196,96,96,.12);color:#c46060;}
+.quiz-actions{display:flex;gap:8px;margin-top:12px;}
+.qbtn{flex:1;padding:10px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:.87rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;}
+.qbtn.sec{flex:0 0 auto;background:none;border:1px solid var(--border);color:var(--muted);padding:10px 15px;}
+.ph{padding:34px 24px 0;max-width:840px;margin:0 auto;}
+.ph h2{font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2rem);font-weight:600;}
+.ph p{margin-top:8px;color:var(--muted);font-size:.92rem;max-width:500px;}
+.gold-line{width:40px;height:2px;background:var(--gold);margin:13px 0 0;}
+.pc{padding:26px 24px 60px;max-width:840px;margin:0 auto;}
+/* HOME */
+.home-hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px 40px;position:relative;overflow:hidden;}
+.home-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% 30%,rgba(212,168,67,.08) 0%,transparent 65%);}
+.hcross{font-size:2.8rem;color:var(--gold);margin-bottom:16px;animation:fu .8s ease both;}
+.home-hero h1{font-family:'Cinzel',serif;font-size:clamp(1.8rem,5.5vw,3.1rem);font-weight:600;animation:fu .8s .15s ease both;position:relative;}
+.home-hero h1 span{color:var(--gold);}
+.hero-sub{margin-top:9px;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);animation:fu .8s .28s ease both;position:relative;}
+.votd{margin:28px auto 0;max-width:540px;width:100%;background:var(--surface);border:1px solid rgba(212,168,67,.28);border-radius:12px;padding:24px 26px;animation:fu .8s .42s ease both;position:relative;overflow:hidden;}
+.votd::before{content:'\201C';position:absolute;top:-8px;left:12px;font-family:'Crimson Pro',serif;font-size:7rem;color:rgba(212,168,67,.07);line-height:1;}
+.votd-lbl{font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:11px;}
+.votd-txt{font-family:'Crimson Pro',serif;font-size:1.18rem;font-style:italic;line-height:1.55;}
+.votd-ref{margin-top:11px;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+.votd-btn{margin-top:13px;background:none;border:1px solid rgba(212,168,67,.3);color:var(--gold);padding:6px 17px;border-radius:20px;font-size:.74rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.votd-btn:hover{background:var(--gold-dim);}
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;max-width:540px;margin:22px auto 0;animation:fu .8s .56s ease both;}
+.qc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:17px 15px;cursor:pointer;transition:all .22s;text-align:left;}
+.qc:hover{border-color:rgba(212,168,67,.4);background:var(--surface2);transform:translateY(-2px);}
+.qc-icon{font-size:1.4rem;margin-bottom:8px;}
+.qc h3{font-size:.87rem;font-weight:500;margin-bottom:3px;}
+.qc p{font-size:.73rem;color:var(--muted);}
+/* PRAYER */
+.cat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px;}
+.cat-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--muted);font-size:.77rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.cat-btn.active,.cat-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.pp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:11px;}
+.pp{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:17px 15px;transition:all .2s;position:relative;}
+.pp.prayed{border-color:rgba(90,158,110,.45);background:rgba(90,158,110,.05);}
+.pp-cat{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.pp-txt{font-family:'Crimson Pro',serif;font-size:.98rem;line-height:1.5;margin-bottom:9px;}
+.pp-verse{font-size:.74rem;color:var(--muted);font-style:italic;margin-bottom:13px;}
+.pp-count{position:absolute;top:10px;right:12px;font-size:.67rem;color:var(--muted);}
+.pray-btn{width:100%;padding:7px;border-radius:7px;border:1px solid var(--border);background:none;color:var(--muted);font-size:.78rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;}
+.pray-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.pp.prayed .pray-btn{border-color:var(--green);color:var(--green);background:rgba(90,158,110,.08);}
+/* MEMORY VERSES */
+.mem-intro{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:15px 17px;margin-bottom:22px;font-size:.85rem;color:var(--muted);line-height:1.6;}
+.mem-intro strong{color:var(--gold);}
+.vc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:19px 17px;margin-bottom:11px;transition:all .2s;}
+.vc.saved{border-color:rgba(212,168,67,.4);background:rgba(212,168,67,.04);}
+.vc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;}
+.vc-ref{font-family:'Cinzel',serif;font-size:.79rem;color:var(--gold);letter-spacing:.05em;}
+.vc-topic{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--surface2);padding:3px 8px;border-radius:10px;}
+.vc-txt{font-family:'Crimson Pro',serif;font-size:1.07rem;line-height:1.65;margin-bottom:13px;}
+.vc-acts{display:flex;gap:7px;flex-wrap:wrap;}
+.vbtn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:none;font-size:.76rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;color:var(--muted);}
+.vbtn.save:hover,.vc.saved .vbtn.save{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.vbtn.copy:hover{border-color:var(--accent);color:var(--accent);background:rgba(91,143,168,.1);}
+.vbtn.quiz:hover{border-color:var(--green);color:var(--green);background:rgba(90,158,110,.08);}
+/* CALENDAR */
+.cal-nav{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+.cal-nav h3{font-family:'Cinzel',serif;font-size:1.07rem;}
+.cnbtn{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:6px 13px;border-radius:20px;cursor:pointer;font-size:.78rem;transition:all .18s;font-family:'DM Sans',sans-serif;}
+.cnbtn:hover{color:var(--gold);border-color:rgba(212,168,67,.4);}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:5px;}
+.cal-dow{text-align:center;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:3px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-day{aspect-ratio:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;font-size:.84rem;}
+.cal-day:hover:not(.empty){border-color:rgba(212,168,67,.45);background:var(--surface2);transform:scale(1.05);}
+.cal-day.empty{background:none;border-color:transparent;cursor:default;}
+.cal-day.today{border-color:var(--gold);color:var(--gold);}
+.cal-day.has-reading::after{content:'';position:absolute;bottom:3px;width:4px;height:4px;background:var(--gold);border-radius:50%;opacity:.55;}
+.cal-day.done{background:rgba(90,158,110,.1);border-color:rgba(90,158,110,.35);}
+.cal-day.done::after{background:var(--green);opacity:1;}
+.cal-day.selected{border-color:var(--gold);background:var(--gold-dim);}
+.rp{display:none;margin-top:16px;background:var(--surface);border:1px solid rgba(212,168,67,.27);border-radius:11px;padding:22px;}
+.rp.open{display:block;}
+.rp-lbl{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.rp-title{font-family:'Cinzel',serif;font-size:1.07rem;margin-bottom:5px;}
+.rp-pass{font-family:'Crimson Pro',serif;font-size:.98rem;color:var(--muted);margin-bottom:14px;}
+.rp-acts{display:flex;gap:8px;flex-wrap:wrap;}
+.rpbtn{padding:8px 18px;border-radius:20px;cursor:pointer;font-size:.78rem;transition:all .2s;font-family:'DM Sans',sans-serif;border:none;}
+.rpbtn.primary{background:var(--gold);color:var(--bg);font-weight:500;}
+.rpbtn.primary:hover{opacity:.85;}
+.rpbtn.sec{background:none;border:1px solid rgba(90,158,110,.4);color:var(--green);}
+.rpbtn.sec:hover{background:rgba(90,158,110,.1);}
+
+/* ═══ BIBLE READER ═══ */
+.bible-wrap{display:flex;height:calc(100vh - 56px);overflow:hidden;}
+/* sidebar */
+.bible-sidebar{width:200px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:16px 0;}
+.bible-sidebar::-webkit-scrollbar{width:3px;}
+.bible-sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);}
+.sb-section{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);padding:10px 14px 5px;font-weight:500;}
+.sb-book{padding:7px 14px;font-size:.83rem;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;justify-content:space-between;align-items:center;}
+.sb-book:hover{color:var(--text);background:var(--surface2);}
+.sb-book.active{color:var(--gold);background:var(--gold-dim);}
+/* main reading area */
+.bible-reader{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.bible-reader::-webkit-scrollbar{width:5px;}
+.bible-reader::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:10px;}
+/* top bar */
+.bible-topbar{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:10;}
+.bible-book-name{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);min-width:80px;}
+.ch-select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.ch-select:focus{outline:none;border-color:var(--gold);}
+.ch-nav-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:8px;cursor:pointer;font-size:.8rem;transition:all .18s;font-family:'DM Sans',sans-serif;}
+.ch-nav-btn:hover{color:var(--gold);border-color:rgba(212,168,67,.4);}
+/* highlight toolbar */
+.hl-toolbar{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;}
+.hl-label{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.hl-btn{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .18s;}
+.hl-btn:hover{transform:scale(1.2);}
+.hl-btn.active{border-color:var(--text);}
+.hl-btn.yellow{background:rgba(255,220,50,.7);}
+.hl-btn.blue{background:rgba(91,143,168,.7);}
+.hl-btn.green{background:rgba(90,158,110,.7);}
+.hl-btn.pink{background:rgba(220,100,120,.7);}
+.hl-btn.clear{background:var(--surface2);border-color:var(--border);color:var(--muted);font-size:.65rem;width:auto;padding:0 8px;border-radius:10px;}
+/* verse area */
+.bible-text{padding:28px 28px 60px;max-width:700px;}
+.bible-ch-title{font-family:'Cinzel',serif;font-size:.9rem;letter-spacing:.08em;color:var(--muted);margin-bottom:22px;}
+.vrow{display:flex;gap:10px;padding:5px 8px;border-radius:6px;transition:background .15s;cursor:pointer;position:relative;margin-bottom:2px;}
+.vrow:hover{background:var(--surface);}
+.vrow.hl-yellow{background:var(--highlight-yellow)!important;}
+.vrow.hl-blue{background:var(--highlight-blue)!important;}
+.vrow.hl-green{background:var(--highlight-green)!important;}
+.vrow.hl-pink{background:var(--highlight-pink)!important;}
+.vrow.has-note{border-left:2px solid var(--gold);}
+.vnum{flex-shrink:0;font-family:'Cinzel',serif;font-size:.7rem;color:var(--gold);margin-top:4px;width:20px;text-align:right;}
+.vtxt{font-family:'Crimson Pro',serif;font-size:1.1rem;line-height:1.78;color:var(--text);}
+.vnote-indicator{position:absolute;right:8px;top:8px;font-size:.68rem;color:var(--gold);opacity:.7;}
+/* note panel */
+.note-panel{width:260px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:16px;display:none;flex-direction:column;gap:12px;}
+.note-panel.open{display:flex;}
+.note-panel::-webkit-scrollbar{width:3px;}
+.note-header{font-family:'Cinzel',serif;font-size:.85rem;color:var(--gold);padding-bottom:10px;border-bottom:1px solid var(--border);}
+.note-verse-ref{font-size:.72rem;color:var(--muted);margin-bottom:6px;}
+.note-ta{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px 10px;color:var(--text);font-size:.88rem;font-family:'DM Sans',sans-serif;resize:vertical;min-height:90px;line-height:1.5;}
+.note-ta:focus{outline:none;border-color:var(--gold);}
+.note-save-btn{background:var(--gold);color:var(--bg);border:none;padding:8px 16px;border-radius:7px;font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;align-self:flex-start;}
+.note-save-btn:hover{opacity:.85;}
+.note-close-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 14px;border-radius:7px;font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;align-self:flex-start;margin-left:6px;}
+.saved-notes-list{margin-top:10px;}
+.saved-note-item{background:var(--surface2);border-radius:7px;padding:10px;margin-bottom:8px;}
+.sni-ref{font-size:.68rem;color:var(--gold);margin-bottom:4px;}
+.sni-text{font-size:.82rem;color:var(--text);line-height:1.5;}
+.sni-del{font-size:.7rem;color:var(--muted);cursor:pointer;margin-top:5px;display:inline-block;}
+.sni-del:hover{color:#c46060;}
+/* empty state */
+.bible-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);text-align:center;padding:40px;}
+.bible-empty .be-icon{font-size:3rem;margin-bottom:16px;opacity:.5;}
+.bible-empty p{font-size:.9rem;}
+.sb-search{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;color:var(--text);font-size:.8rem;font-family:'DM Sans',sans-serif;outline:none;margin:8px 0 4px;}
+.sb-search:focus{border-color:var(--gold);}
+.bible-sidebar{padding:10px 0;}
+
+@keyframes fu{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:10px;}
+@media(max-width:560px){.nav-links a{padding:5px 7px;font-size:.69rem;}.quick-grid{grid-template-columns:1fr 1fr;}.bible-sidebar{width:150px;}.note-panel{width:220px;}.bible-text{padding:18px 14px 50px;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">✝ Mateo's Faith</div>
+  <div class="nav-links">
+    <a class="active" onclick="go('home',this)">Home</a>
+    <a onclick="go('prayer',this)">Prayer</a>
+    <a onclick="go('verses',this)">Verses</a>
+    <a onclick="go('calendar',this)">Plan</a>
+    <a onclick="go('bible',this)">Bible</a>
+  </div>
+</nav>
+<div class="toast" id="toast"></div>
+
+<!-- QUIZ OVERLAY -->
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-box">
+    <h3>Memory Quiz ✦</h3>
+    <div class="quiz-ref" id="quizRef"></div>
+    <textarea class="quiz-ta" id="quizTa" placeholder="Type the verse from memory…"></textarea>
+    <div class="quiz-result" id="quizResult"></div>
+    <div class="quiz-actions">
+      <button class="qbtn" onclick="checkQuiz()">Check It</button>
+      <button class="qbtn sec" onclick="closeQuiz()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="home-hero">
+    <div class="hcross">✝</div>
+    <h1>Hey <span>Mateo</span>,<br>let's grow today.</h1>
+    <p class="hero-sub">Victory City Church · Wednesday Youth</p>
+    <div class="votd">
+      <div class="votd-lbl">✦ Verse of the Day</div>
+      <div class="votd-txt" id="votdTxt"></div>
+      <div class="votd-ref" id="votdRef"></div>
+      <button class="votd-btn" onclick="newVotd()">↻ New Verse</button>
+    </div>
+    <div class="quick-grid">
+      <div class="qc" onclick="go('prayer',navEl(1))"><div class="qc-icon">🙏</div><h3>Prayer Points</h3><p>Tap to pray through topics</p></div>
+      <div class="qc" onclick="go('verses',navEl(2))"><div class="qc-icon">📖</div><h3>Memory Verses</h3><p>Save & quiz yourself</p></div>
+      <div class="qc" onclick="go('calendar',navEl(3))"><div class="qc-icon">📅</div><h3>Reading Plan</h3><p>Tap any day for today's reading</p></div>
+      <div class="qc" onclick="go('bible',navEl(4))"><div class="qc-icon">✦</div><h3>Bible Reader</h3><p>Highlight, annotate & notes</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRAYER -->
+<div id="page-prayer" class="page">
+  <div class="ph"><h2>Prayer Points</h2><p>Hit <strong style="color:var(--gold)">Pray This</strong> to log it. Your count saves as you go.</p><div class="gold-line"></div></div>
+  <div class="pc">
+    <div class="cat-row">
+      <button class="cat-btn active" onclick="filterPrayer('all',this)">All</button>
+      <button class="cat-btn" onclick="filterPrayer('faith',this)">Faith</button>
+      <button class="cat-btn" onclick="filterPrayer('family',this)">Family</button>
+      <button class="cat-btn" onclick="filterPrayer('school',this)">School</button>
+      <button class="cat-btn" onclick="filterPrayer('strength',this)">Strength</button>
+      <button class="cat-btn" onclick="filterPrayer('others',this)">Others</button>
+    </div>
+    <div class="pp-grid" id="ppGrid"></div>
+  </div>
+</div>
+
+<!-- MEMORY VERSES -->
+<div id="page-verses" class="page">
+  <div class="ph"><h2>Memory Verses</h2><p>Save ones you love. Quiz yourself — that's how they stick for real.</p><div class="gold-line"></div></div>
+  <div class="pc">
+    <div class="mem-intro"><strong>Tip:</strong> Pick 1–2 a week. Read them every morning and night. After a few days, hit Quiz and type it without looking. That's when it locks in.</div>
+    <div id="vcList"></div>
+  </div>
+</div>
+
+<!-- CALENDAR -->
+<div id="page-calendar" class="page">
+  <div class="ph"><h2>Reading Plan</h2><p>Tap any day to see the reading. Open it straight in the Bible reader.</p><div class="gold-line"></div></div>
+  <div class="pc">
+    <div class="cal-nav">
+      <button class="cnbtn" onclick="shiftMonth(-1)">← Prev</button>
+      <h3 id="calLabel"></h3>
+      <button class="cnbtn" onclick="shiftMonth(1)">Next →</button>
+    </div>
+    <div class="cal-head"><div class="cal-dow">Sun</div><div class="cal-dow">Mon</div><div class="cal-dow">Tue</div><div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="rp" id="rpPanel">
+      <div class="rp-lbl" id="rpLbl"></div>
+      <div class="rp-title" id="rpTitle"></div>
+      <div class="rp-pass" id="rpPass"></div>
+      <div class="rp-acts">
+        <button class="rpbtn primary" onclick="openBibleFromCal()">Open in Bible ↗</button>
+        <button class="rpbtn sec" id="rpDoneBtn" onclick="markRead()">✓ Mark Read</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BIBLE READER -->
+<div id="page-bible" class="page" style="padding-top:56px;">
+  <div class="bible-wrap">
+    <div class="bible-sidebar" id="bibleSidebar"></div>
+    <div class="bible-reader" id="bibleReader">
+      <div class="bible-empty">
+        <div class="be-icon">📖</div>
+        <p style="font-family:'Cinzel',serif;font-size:1rem;color:var(--text);margin-bottom:8px;">Pick a Book</p>
+        <p>Select any book from the sidebar to start reading.<br>You can highlight verses and add notes.</p>
+      </div>
+    </div>
+    <div class="note-panel" id="notePanel">
+      <div class="note-header">📝 Notes</div>
+      <div id="noteEditArea"></div>
+      <div class="saved-notes-list" id="savedNotesList"></div>
+    </div>
+  </div>
+</div>
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const VOTD=[{t:"I can do all things through Christ who strengthens me.",r:"Philippians 4:13"},{t:"For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",r:"John 3:16"},{t:"Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",r:"Proverbs 3:5–6"},{t:"Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.",r:"Joshua 1:9"},{t:"Your word is a lamp to my feet and a light to my path.",r:"Psalm 119:105"},{t:"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",r:"Jeremiah 29:11"},{t:"And we know that in all things God works for the good of those who love him, who have been called according to his purpose.",r:"Romans 8:28"},{t:"Do not conform to the pattern of this world, but be transformed by the renewing of your mind.",r:"Romans 12:2"},{t:"But those who hope in the Lord will renew their strength. They will soar on wings like eagles.",r:"Isaiah 40:31"},{t:"The Lord is my shepherd, I lack nothing.",r:"Psalm 23:1"},{t:"Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.",r:"Colossians 3:23"},{t:"Seek first his kingdom and his righteousness, and all these things will be given to you as well.",r:"Matthew 6:33"}];
+const PRAYERS=[{cat:'faith',topic:'Getting Closer to God',txt:"Lord, help me want to know You more. Give me a real hunger to read the Bible and actually talk to You, not just go through the motions.",verse:'James 4:8 — "Draw near to God and He will draw near to you."'},{cat:'faith',topic:'Understanding the Bible',txt:"God, when I read the Bible, help it make sense to me. Open my eyes to what You're saying and let it actually change how I live.",verse:'Psalm 119:18 — "Open my eyes, that I may see wonders from Your law."'},{cat:'faith',topic:'Faith Over Fear',txt:"Father, when I feel nervous or unsure, remind me that You're with me. Help me choose faith instead of worrying.",verse:'Isaiah 41:10 — "Do not fear, for I am with you."'},{cat:'family',topic:'My Family',txt:"God, bless my family. Help us love each other well, even when things are hard. Protect us and keep us close to You.",verse:'Psalm 128:3 — A blessing over families.'},{cat:'family',topic:'The Move to Leander ISD',txt:"Lord, this is a big transition. Help my whole family adjust well and feel at home. Guide every step of this move.",verse:'Proverbs 3:6 — "In all your ways acknowledge Him and He will direct your paths."'},{cat:'school',topic:'Wisdom at School',txt:"God, give me wisdom in school. Help me focus, do my best, and not get distracted by stuff that doesn't matter.",verse:'James 1:5 — "If any of you lacks wisdom, ask God, and it will be given to him."'},{cat:'school',topic:'Good Friendships',txt:"Lord, help me find real friends — people who make me better. Keep me away from friendships that pull me in the wrong direction.",verse:'Proverbs 13:20 — "Walk with the wise and become wise."'},{cat:'strength',topic:'Character & Integrity',txt:"God, help me be the same person whether people are watching or not. Give me the strength to do what's right even when it costs me.",verse:'Proverbs 11:3 — "The integrity of the upright guides them."'},{cat:'strength',topic:'Football & Effort',txt:"Lord, help me give everything I have on the field. Give me a coachable spirit, a humble heart, and the discipline to keep improving.",verse:'Colossians 3:23 — "Whatever you do, work at it with all your heart."'},{cat:'strength',topic:'Handling Temptation',txt:"Father, help me say no to things I know are wrong. Give me the strength to walk away — remind me I'm not alone in the fight.",verse:'1 Corinthians 10:13 — "God will not let you be tempted beyond what you can bear."'},{cat:'others',topic:"Friends Who Don't Know God",txt:"Let my life point people to You. Help me live in a way that makes people curious about my faith.",verse:'Matthew 5:16 — "Let your light shine before others."'},{cat:'others',topic:'Victory City Youth Group',txt:"God, bless Victory City and the youth group. Help everyone there — including me — to grow for real, not just show up on Wednesdays.",verse:'Hebrews 10:25 — "Do not give up meeting together."'}];
+const MEM_VERSES=[{ref:'Joshua 1:9',topic:'Courage',txt:'Have I not commanded you? Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.'},{ref:'Philippians 4:13',topic:'Strength',txt:'I can do all this through him who gives me strength.'},{ref:'Romans 8:28',topic:'Trust',txt:'And we know that in all things God works for the good of those who love him, who have been called according to his purpose.'},{ref:'Proverbs 3:5–6',topic:'Direction',txt:'Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.'},{ref:'John 3:16',topic:"God's Love",txt:'For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.'},{ref:'Jeremiah 29:11',topic:'Purpose',txt:'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.'},{ref:'Romans 12:2',topic:'Identity',txt:"Do not conform to the pattern of this world, but be transformed by the renewing of your mind."},{ref:'Psalm 23:1',topic:'Peace',txt:'The Lord is my shepherd, I lack nothing.'},{ref:'Matthew 6:33',topic:'Priorities',txt:'But seek first his kingdom and his righteousness, and all these things will be given to you as well.'},{ref:'1 Corinthians 10:13',topic:'Temptation',txt:'No temptation has overtaken you except what is common to mankind. And God is faithful; he will not let you be tempted beyond what you can bear.'},{ref:'Colossians 3:23',topic:'Work Ethic',txt:'Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.'},{ref:'Isaiah 40:31',topic:'Endurance',txt:'But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.'},{ref:'Psalm 139:14',topic:'Identity',txt:'I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well.'},{ref:'Galatians 5:22–23',topic:'Character',txt:'But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control.'}];
+const PLAN=[{title:'Who is Jesus?',pass:'Mark 1',book:'Mark',ch:1},{title:'Jesus Heals & Forgives',pass:'Mark 2',book:'Mark',ch:2},{title:'Parables of Jesus',pass:'Mark 4',book:'Mark',ch:4},{title:'Who Do You Say I Am?',pass:'Mark 8',book:'Mark',ch:8},{title:'Serving Others',pass:'Mark 10',book:'Mark',ch:10},{title:'The Last Supper',pass:'Mark 14',book:'Mark',ch:14},{title:'The Resurrection',pass:'Mark 16',book:'Mark',ch:16},{title:'The Beatitudes',pass:'Matthew 5',book:'Matthew',ch:5},{title:'Prayer & Worry',pass:'Matthew 6',book:'Matthew',ch:6},{title:'Build on the Rock',pass:'Matthew 7',book:'Matthew',ch:7},{title:'Born Again',pass:'John 3',book:'John',ch:3},{title:'Bread of Life',pass:'John 6',book:'John',ch:6},{title:'The Good Shepherd',pass:'John 10',book:'John',ch:10},{title:'Raising of Lazarus',pass:'John 11',book:'John',ch:11},{title:'Love One Another',pass:'John 13',book:'John',ch:13},{title:'I Am the Way',pass:'John 14',book:'John',ch:14},{title:'The True Vine',pass:'John 15',book:'John',ch:15},{title:'Nothing Can Separate You',pass:'Romans 8',book:'Romans',ch:8},{title:'Living as a Sacrifice',pass:'Romans 12',book:'Romans',ch:12},{title:'Created for Good Works',pass:'Ephesians 2',book:'Ephesians',ch:2},{title:'Armor of God',pass:'Ephesians 6',book:'Ephesians',ch:6},{title:'The Lord Is My Shepherd',pass:'Psalm 23',book:'Psalms',ch:23},{title:'God Knows You Fully',pass:'Psalm 139',book:'Psalms',ch:139},{title:'Wisdom in Trials',pass:'James 1',book:'James',ch:1},{title:'Faith Without Works',pass:'James 2',book:'James',ch:2},{title:'Fruit of the Spirit',pass:'Galatians 5',book:'Galatians',ch:5},{title:'Called Children of God',pass:'1 John 3',book:'1 John',ch:3},{title:'God Is Love',pass:'1 John 4',book:'1 John',ch:4},{title:'Strength & Trust',pass:'Proverbs 3',book:'Proverbs',ch:3},{title:'The Great Commission',pass:'Matthew 28',book:'Matthew',ch:28}];
+const BIBLE_BOOKS={
+  OT:['Genesis','Exodus','Leviticus','Numbers','Deuteronomy','Joshua','Judges','Ruth','1 Samuel','2 Samuel','1 Kings','2 Kings','1 Chronicles','2 Chronicles','Ezra','Nehemiah','Esther','Job','Psalms','Proverbs','Ecclesiastes',"Song Of Songs",'Isaiah','Jeremiah','Lamentations','Ezekiel','Daniel','Hosea','Joel','Amos','Obadiah','Jonah','Micah','Nahum','Habakkuk','Zephaniah','Haggai','Zechariah','Malachi'],
+  NT:['Matthew','Mark','Luke','John','Acts','Romans','1 Corinthians','2 Corinthians','Galatians','Ephesians','Philippians','Colossians','1 Thessalonians','2 Thessalonians','1 Timothy','2 Timothy','Titus','Philemon','Hebrews','James','1 Peter','2 Peter','1 John','2 John','3 John','Jude','Revelation']
+};
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let prayedCounts=JSON.parse(localStorage.getItem('prayedCounts')||'{}');
+let savedVerses=JSON.parse(localStorage.getItem('savedVerses')||'[]');
+let readDays=JSON.parse(localStorage.getItem('readDays')||'[]');
+let highlights=JSON.parse(localStorage.getItem('highlights')||'{}'); // key: "Book-ch-v" => color
+let notes=JSON.parse(localStorage.getItem('notes')||'{}'); // key: "Book-ch-v" => text
+let currentFilter='all';
+let calYear,calMonth,selectedDay=null,selectedPlanIdx=null;
+let quizVerseIdx=null;
+let currentBook=null,currentCh=1;
+let activeHlColor='yellow';
+let noteVerseKey=null;
+const today=new Date();
+
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function save(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function navEl(i){return document.querySelectorAll('.nav-links a')[i];}
+function vKey(book,ch,v){return book+'-'+ch+'-'+v;}
+
+// ── NAV ─────────────────────────────────────────────────────────────────────
+function go(page,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if(el)el.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── VOTD ─────────────────────────────────────────────────────────────────────
+let votdIdx=Math.floor(Math.random()*VOTD.length);
+function renderVotd(){const v=VOTD[votdIdx];document.getElementById('votdTxt').textContent='"'+v.t+'"';document.getElementById('votdRef').textContent='— '+v.r;}
+function newVotd(){votdIdx=(votdIdx+1)%VOTD.length;renderVotd();}
+
+// ── PRAYER ───────────────────────────────────────────────────────────────────
+function renderPrayer(){
+  const grid=document.getElementById('ppGrid');grid.innerHTML='';
+  const list=currentFilter==='all'?PRAYERS:PRAYERS.filter(p=>p.cat===currentFilter);
+  list.forEach(p=>{
+    const ri=PRAYERS.indexOf(p);const count=prayedCounts[ri]||0;const prayed=count>0;
+    const d=document.createElement('div');d.className='pp'+(prayed?' prayed':'');
+    d.innerHTML=`<div class="pp-count">${count>0?'🙏 '+count:''}</div><div class="pp-cat">${p.cat}</div><div class="pp-txt">${p.topic} — ${p.txt}</div><div class="pp-verse">${p.verse}</div><button class="pray-btn" onclick="prayThis(${ri})">${prayed?'✓ Prayed':'🙏 Pray This'}</button>`;
+    grid.appendChild(d);
+  });
+}
+function filterPrayer(cat,btn){currentFilter=cat;document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPrayer();}
+function prayThis(idx){prayedCounts[idx]=(prayedCounts[idx]||0)+1;save('prayedCounts',prayedCounts);toast('🙏 Prayed!');renderPrayer();}
+
+// ── MEMORY VERSES ────────────────────────────────────────────────────────────
+function renderVerses(){
+  const list=document.getElementById('vcList');list.innerHTML='';
+  MEM_VERSES.forEach((v,i)=>{
+    const sv=savedVerses.includes(i);
+    const d=document.createElement('div');d.className='vc'+(sv?' saved':'');
+    d.innerHTML=`<div class="vc-head"><div class="vc-ref">${v.ref}</div><div class="vc-topic">${v.topic}</div></div><div class="vc-txt">${v.txt}</div><div class="vc-acts"><button class="vbtn save" onclick="toggleSave(${i})">${sv?'★ Saved':'☆ Save'}</button><button class="vbtn copy" onclick="copyVerse(${i})">Copy</button><button class="vbtn quiz" onclick="startQuiz(${i})">Quiz Me</button></div>`;
+    list.appendChild(d);
+  });
+}
+function toggleSave(i){const idx=savedVerses.indexOf(i);if(idx>-1)savedVerses.splice(idx,1);else savedVerses.push(i);save('savedVerses',savedVerses);renderVerses();toast(savedVerses.includes(i)?'★ Saved!':'Removed.');}
+function copyVerse(i){const v=MEM_VERSES[i];navigator.clipboard.writeText('"'+v.txt+'" — '+v.ref).then(()=>toast('Copied!'));}
+
+// ── QUIZ ──────────────────────────────────────────────────────────────────────
+function startQuiz(i){quizVerseIdx=i;document.getElementById('quizRef').textContent=MEM_VERSES[i].ref;document.getElementById('quizTa').value='';const r=document.getElementById('quizResult');r.style.display='none';r.className='quiz-result';document.getElementById('quizOverlay').classList.add('open');}
+function closeQuiz(){document.getElementById('quizOverlay').classList.remove('open');}
+function checkQuiz(){
+  const ans=document.getElementById('quizTa').value.trim().toLowerCase();
+  const correct=MEM_VERSES[quizVerseIdx].txt.toLowerCase();
+  const r=document.getElementById('quizResult');r.style.display='block';
+  const words=correct.split(' ');let matches=0;const ansWords=ans.split(' ');
+  words.forEach(w=>{if(ansWords.some(a=>a.replace(/[^a-z]/g,'')===w.replace(/[^a-z]/g,'')))matches++;});
+  const pct=Math.round((matches/words.length)*100);
+  if(pct>=80){r.className='quiz-result ok';r.textContent='✓ Great job! About '+pct+'% right. Keep it up!';}
+  else{r.className='quiz-result no';r.textContent='Not quite ('+pct+'%). Keep practicing! "'+MEM_VERSES[quizVerseIdx].txt+'"';}
+}
+
+// ── CALENDAR ─────────────────────────────────────────────────────────────────
+calYear=today.getFullYear();calMonth=today.getMonth();
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const PLAN_START=new Date(2025,4,1);
+function planIdxForDate(y,m,d){const dt=new Date(y,m,d);const diff=Math.floor((dt-PLAN_START)/(864e5));if(diff<0)return null;return diff%PLAN.length;}
+function renderCalendar(){
+  document.getElementById('calLabel').textContent=MONTHS[calMonth]+' '+calYear;
+  const grid=document.getElementById('calGrid');grid.innerHTML='';
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  for(let i=0;i<firstDay;i++){const e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
+  for(let d=1;d<=daysInMonth;d++){
+    const cell=document.createElement('div');
+    const pIdx=planIdxForDate(calYear,calMonth,d);
+    const key=calYear+'-'+calMonth+'-'+d;
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const isDone=readDays.includes(key);
+    let cls='cal-day';
+    if(isToday)cls+=' today';if(pIdx!==null)cls+=' has-reading';if(isDone)cls+=' done';if(selectedDay===key)cls+=' selected';
+    cell.className=cls;cell.innerHTML='<span>'+d+'</span>';
+    if(pIdx!==null)cell.onclick=()=>selectDay(d,pIdx,key);
+    grid.appendChild(cell);
+  }
+}
+function shiftMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}selectedDay=null;document.getElementById('rpPanel').classList.remove('open');renderCalendar();}
+function selectDay(d,pIdx,key){
+  selectedDay=key;selectedPlanIdx=pIdx;const plan=PLAN[pIdx];
+  document.getElementById('rpLbl').textContent='Day '+(pIdx+1)+' of 30 · '+MONTHS[calMonth]+' '+d;
+  document.getElementById('rpTitle').textContent=plan.title;
+  document.getElementById('rpPass').textContent='📖 '+plan.pass;
+  document.getElementById('rpDoneBtn').textContent=readDays.includes(key)?'✓ Read!':'✓ Mark Read';
+  document.getElementById('rpPanel').classList.add('open');renderCalendar();
+}
+function markRead(){if(!selectedDay)return;if(!readDays.includes(selectedDay)){readDays.push(selectedDay);save('readDays',readDays);toast('✓ Marked as read!');}else{toast('Already read!');}document.getElementById('rpDoneBtn').textContent='✓ Read!';renderCalendar();}
+function openBibleFromCal(){if(selectedPlanIdx===null)return;const plan=PLAN[selectedPlanIdx];openBibleChapter(plan.book,plan.ch);}
+function openBibleChapter(book,ch){
+  currentBook=book;currentCh=ch;
+  go('bible',navEl(4));
+  if(typeof BIBLE!=='undefined'){renderBible();}
+  else{document.getElementById('bibleReader').innerHTML='<div style="padding:40px;color:var(--muted);text-align:center;">Bible data loading…</div>';}
+}
+
+// ── BIBLE SIDEBAR ─────────────────────────────────────────────────────────────
+function renderSidebar(filter){
+  const sb=document.getElementById('bibleSidebar');
+  const searchBox=sb.querySelector('.sb-search');
+  const scrollTop=sb.scrollTop;
+  const q=(filter||'').toLowerCase();
+  sb.innerHTML='<input class="sb-search" placeholder="Search book…" oninput="renderSidebar(this.value)" value="'+q+'">';
+  ['OT','NT'].forEach(section=>{
+    const books=BIBLE_BOOKS[section].filter(b=>!q||b.toLowerCase().includes(q));
+    if(!books.length)return;
+    const lbl=document.createElement('div');lbl.className='sb-section';lbl.textContent=section==='NT'?'New Testament':'Old Testament';sb.appendChild(lbl);
+    books.forEach(book=>{
+      const item=document.createElement('div');item.className='sb-book'+(currentBook===book?' active':'');
+      const chCount=typeof BIBLE!=='undefined'&&BIBLE[book]?Object.keys(BIBLE[book]).length:'';
+      item.innerHTML=book+'<span style="font-size:.65rem;color:rgba(255,255,255,.18)">'+chCount+'</span>';
+      item.onclick=()=>{currentBook=book;currentCh=1;renderBible();renderSidebar(q);};
+      sb.appendChild(item);
+    });
+  });
+  sb.scrollTop=scrollTop;
+}
+
+// ── BIBLE READER ──────────────────────────────────────────────────────────────
+function renderBible(){
+  if(!currentBook||typeof BIBLE==='undefined')return;
+  const bookData=BIBLE[currentBook];
+  if(!bookData){document.getElementById('bibleReader').innerHTML='<div style="padding:40px;color:var(--muted);text-align:center;">This book is not yet included in the offline reader.</div>';return;}
+  const chapters=Object.keys(bookData).map(Number).sort((a,b)=>a-b);
+  if(!chapters.includes(currentCh))currentCh=chapters[0];
+  const verses=bookData[currentCh];
+  // Build top bar
+  let chOptions=chapters.map(c=>`<option value="${c}"${c===currentCh?' selected':''}>${c}</option>`).join('');
+  const prevCh=currentCh>chapters[0]?currentCh-1:null;
+  const nextCh=currentCh<chapters[chapters.length-1]?currentCh+1:null;
+  let topbar=`<div class="bible-topbar">
+    <div class="bible-book-name">${currentBook}</div>
+    <button class="ch-nav-btn" onclick="navCh(-1)" ${!prevCh?'disabled style="opacity:.3"':''}>← Prev</button>
+    <select class="ch-select" onchange="currentCh=+this.value;renderBible()">${chOptions}</select>
+    <button class="ch-nav-btn" onclick="navCh(1)" ${!nextCh?'disabled style="opacity:.3"':''}>Next →</button>
+    <div class="hl-toolbar">
+      <span class="hl-label">Highlight:</span>
+      <div class="hl-btn yellow${activeHlColor==='yellow'?' active':''}" title="Yellow" onclick="setHlColor('yellow',this)"></div>
+      <div class="hl-btn blue${activeHlColor==='blue'?' active':''}" title="Blue" onclick="setHlColor('blue',this)"></div>
+      <div class="hl-btn green${activeHlColor==='green'?' active':''}" title="Green" onclick="setHlColor('green',this)"></div>
+      <div class="hl-btn pink${activeHlColor==='pink'?' active':''}" title="Pink" onclick="setHlColor('pink',this)"></div>
+    </div>
+  </div>`;
+  // Build verses
+  let verseHtml=`<div class="bible-text"><div class="bible-ch-title">${currentBook} — Chapter ${currentCh} (WEB — World English Bible)</div>`;
+  verses.forEach((vtxt,i)=>{
+    const vn=i+1;const key=vKey(currentBook,currentCh,vn);
+    const hl=highlights[key]||'';const hasNote=!!notes[key];
+    verseHtml+=`<div class="vrow${hl?' hl-'+hl:''}${hasNote?' has-note':''}" id="vrow-${vn}" onclick="handleVerseClick(${vn})">
+      <div class="vnum">${vn}</div>
+      <div class="vtxt">${vtxt||''}</div>
+      ${hasNote?'<div class="vnote-indicator">📝</div>':''}
+    </div>`;
+  });
+  verseHtml+='</div>';
+  document.getElementById('bibleReader').innerHTML=topbar+verseHtml;
+  // scroll to top
+  document.getElementById('bibleReader').scrollTop=0;
+}
+function navCh(dir){
+  if(!currentBook||typeof BIBLE==='undefined')return;
+  const chapters=Object.keys(BIBLE[currentBook]).map(Number).sort((a,b)=>a-b);
+  const idx=chapters.indexOf(currentCh);
+  const newIdx=idx+dir;
+  if(newIdx>=0&&newIdx<chapters.length){currentCh=chapters[newIdx];renderBible();}
+}
+function setHlColor(color,el){
+  activeHlColor=color;
+  document.querySelectorAll('.hl-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+function handleVerseClick(vn){
+  const key=vKey(currentBook,currentCh,vn);
+  // Toggle highlight
+  if(highlights[key]===activeHlColor){delete highlights[key];}
+  else{highlights[key]=activeHlColor;}
+  save('highlights',highlights);
+  // Update row class without full re-render
+  const row=document.getElementById('vrow-'+vn);
+  if(row){
+    row.className='vrow'+(highlights[key]?' hl-'+highlights[key]:'')+(notes[key]?' has-note':'');
+  }
+  // Open note panel
+  openNotePanel(vn,key);
+}
+function openNotePanel(vn,key){
+  noteVerseKey=key;
+  const panel=document.getElementById('notePanel');panel.classList.add('open');
+  const ea=document.getElementById('noteEditArea');
+  ea.innerHTML=`<div class="note-verse-ref">${currentBook} ${currentCh}:${vn}</div>
+    <textarea class="note-ta" id="noteTa" placeholder="Add a note for this verse…">${notes[key]||''}</textarea>
+    <div style="display:flex;gap:6px;margin-top:8px;">
+      <button class="note-save-btn" onclick="saveNote(${vn})">Save Note</button>
+      <button class="note-close-btn" onclick="closeNotePanel()">Close</button>
+    </div>`;
+  document.getElementById('noteTa').focus();
+  renderSavedNotes();
+}
+function saveNote(vn){
+  const key=noteVerseKey;
+  const txt=document.getElementById('noteTa').value.trim();
+  if(txt){notes[key]=txt;}else{delete notes[key];}
+  save('notes',notes);
+  // update note indicator on row
+  const row=document.getElementById('vrow-'+vn);
+  if(row){
+    row.className='vrow'+(highlights[key]?' hl-'+highlights[key]:'')+(notes[key]?' has-note':'');
+    const old=row.querySelector('.vnote-indicator');if(old)old.remove();
+    if(notes[key]){const ni=document.createElement('div');ni.className='vnote-indicator';ni.textContent='📝';row.appendChild(ni);}
+  }
+  toast(txt?'📝 Note saved!':'Note removed.');
+  renderSavedNotes();
+}
+function closeNotePanel(){document.getElementById('notePanel').classList.remove('open');}
+function renderSavedNotes(){
+  const list=document.getElementById('savedNotesList');
+  const bookNotes=Object.entries(notes).filter(([k])=>k.startsWith(currentBook+'-'+currentCh+'-'));
+  if(bookNotes.length===0){list.innerHTML='<div style="font-size:.78rem;color:var(--muted);margin-top:8px;">No notes for this chapter yet.</div>';return;}
+  list.innerHTML='<div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">This Chapter</div>';
+  bookNotes.forEach(([k,txt])=>{
+    const vn=k.split('-')[2];
+    const item=document.createElement('div');item.className='saved-note-item';
+    item.innerHTML=`<div class="sni-ref">${currentBook} ${currentCh}:${vn}</div><div class="sni-text">${txt}</div><span class="sni-del" onclick="deleteNote('${k}')">✕ Delete</span>`;
+    list.appendChild(item);
+  });
+}
+function deleteNote(key){delete notes[key];save('notes',notes);renderBible();renderSavedNotes();toast('Note deleted.');}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderVotd();renderPrayer();renderVerses();renderCalendar();
+// Sidebar renders after BIBLE data is available (below)
+</script>
+<script src="bible.js"></script>
+<script>
+// Bible data loaded — now render sidebar
+renderSidebar();
+</script>
+</body>
+</html>
