@@ -167,22 +167,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,15,0.9
 .vtxt{font-family:'Crimson Pro',serif;font-size:1.1rem;line-height:1.78;color:var(--text);}
 .vnote-indicator{position:absolute;right:8px;top:8px;font-size:.68rem;color:var(--gold);opacity:.7;}
 /* note panel */
-.note-panel{width:260px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:16px;display:none;flex-direction:column;gap:12px;}
-.note-panel.open{display:flex;}
-.note-panel::-webkit-scrollbar{width:3px;}
-.note-header{font-family:'Cinzel',serif;font-size:.85rem;color:var(--gold);padding-bottom:10px;border-bottom:1px solid var(--border);}
-.note-verse-ref{font-size:.72rem;color:var(--muted);margin-bottom:6px;}
-.note-ta{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px 10px;color:var(--text);font-size:.88rem;font-family:'DM Sans',sans-serif;resize:vertical;min-height:90px;line-height:1.5;}
-.note-ta:focus{outline:none;border-color:var(--gold);}
-.note-save-btn{background:var(--gold);color:var(--bg);border:none;padding:8px 16px;border-radius:7px;font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;align-self:flex-start;}
-.note-save-btn:hover{opacity:.85;}
-.note-close-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 14px;border-radius:7px;font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;align-self:flex-start;margin-left:6px;}
-.saved-notes-list{margin-top:10px;}
-.saved-note-item{background:var(--surface2);border-radius:7px;padding:10px;margin-bottom:8px;}
-.sni-ref{font-size:.68rem;color:var(--gold);margin-bottom:4px;}
-.sni-text{font-size:.82rem;color:var(--text);line-height:1.5;}
-.sni-del{font-size:.7rem;color:var(--muted);cursor:pointer;margin-top:5px;display:inline-block;}
-.sni-del:hover{color:#c46060;}
+
 /* empty state */
 .bible-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);text-align:center;padding:40px;}
 .bible-empty .be-icon{font-size:3rem;margin-bottom:16px;opacity:.5;}
@@ -314,11 +299,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,15,0.9
         <p>Select any book from the sidebar to start reading.<br>You can highlight verses and add notes.</p>
       </div>
     </div>
-    <div class="note-panel" id="notePanel">
-      <div class="note-header">📝 Notes</div>
-      <div id="noteEditArea"></div>
-      <div class="saved-notes-list" id="savedNotesList"></div>
-    </div>
+
   </div>
 </div>
 <script>
@@ -541,23 +522,21 @@ function handleVerseClick(vn){
 }
 function openNotePanel(vn,key){
   noteVerseKey=key;
-  const panel=document.getElementById('notePanel');panel.classList.add('open');
-  const ea=document.getElementById('noteEditArea');
-  ea.innerHTML=`<div class="note-verse-ref">${currentBook} ${currentCh}:${vn}</div>
-    <textarea class="note-ta" id="noteTa" placeholder="Add a note for this verse…">${notes[key]||''}</textarea>
-    <div style="display:flex;gap:6px;margin-top:8px;">
-      <button class="note-save-btn" onclick="saveNote(${vn})">Save Note</button>
-      <button class="note-close-btn" onclick="closeNotePanel()">Close</button>
-    </div>`;
-  document.getElementById('noteTa').focus();
-  renderSavedNotes();
+  document.getElementById('noteModalRef').textContent=currentBook+' '+currentCh+':'+vn;
+  document.getElementById('noteModalTa').value=notes[key]||'';
+  document.getElementById('noteDeleteBtn').style.display=notes[key]?'flex':'none';
+  document.getElementById('noteModal').classList.add('open');
+  setTimeout(()=>document.getElementById('noteModalTa').focus(),100);
 }
-function saveNote(vn){
+function saveNoteModal(){
   const key=noteVerseKey;
-  const txt=document.getElementById('noteTa').value.trim();
+  const txt=document.getElementById('noteModalTa').value.trim();
   if(txt){notes[key]=txt;}else{delete notes[key];}
   save('notes',notes);
-  // update note indicator on row
+  closeNoteModal();
+  // refresh the verse row indicator
+  const parts=key.split('-');
+  const vn=parts[parts.length-1];
   const row=document.getElementById('vrow-'+vn);
   if(row){
     row.className='vrow'+(highlights[key]?' hl-'+highlights[key]:'')+(notes[key]?' has-note':'');
@@ -565,22 +544,18 @@ function saveNote(vn){
     if(notes[key]){const ni=document.createElement('div');ni.className='vnote-indicator';ni.textContent='📝';row.appendChild(ni);}
   }
   toast(txt?'📝 Note saved!':'Note removed.');
-  renderSavedNotes();
 }
-function closeNotePanel(){document.getElementById('notePanel').classList.remove('open');}
-function renderSavedNotes(){
-  const list=document.getElementById('savedNotesList');
-  const bookNotes=Object.entries(notes).filter(([k])=>k.startsWith(currentBook+'-'+currentCh+'-'));
-  if(bookNotes.length===0){list.innerHTML='<div style="font-size:.78rem;color:var(--muted);margin-top:8px;">No notes for this chapter yet.</div>';return;}
-  list.innerHTML='<div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">This Chapter</div>';
-  bookNotes.forEach(([k,txt])=>{
-    const vn=k.split('-')[2];
-    const item=document.createElement('div');item.className='saved-note-item';
-    item.innerHTML=`<div class="sni-ref">${currentBook} ${currentCh}:${vn}</div><div class="sni-text">${txt}</div><span class="sni-del" onclick="deleteNote('${k}')">✕ Delete</span>`;
-    list.appendChild(item);
-  });
+function deleteNoteModal(){
+  if(!noteVerseKey)return;
+  delete notes[noteVerseKey];
+  save('notes',notes);
+  closeNoteModal();
+  renderBible();
+  toast('Note deleted.');
 }
-function deleteNote(key){delete notes[key];save('notes',notes);renderBible();renderSavedNotes();toast('Note deleted.');}
+function closeNoteModal(){document.getElementById('noteModal').classList.remove('open');}
+function renderSavedNotes(){}
+function deleteNote(key){delete notes[key];save('notes',notes);renderBible();toast('Note deleted.');}
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 renderVotd();renderPrayer();renderVerses();renderCalendar();
@@ -679,6 +654,20 @@ renderSidebar();
     <div class="quiz-actions" style="margin-top:16px;">
       <button class="qbtn" id="cqSubmitBtn" onclick="submitCompQuiz()">Check Answers</button>
       <button class="qbtn sec" onclick="closeCompQuiz()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTE MODAL -->
+<div class="quiz-overlay" id="noteModal" style="z-index:220;">
+  <div class="quiz-box" style="max-width:480px;">
+    <div style="font-size:.63rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">📝 Verse Note</div>
+    <div id="noteModalRef" style="font-family:'Cinzel',serif;font-size:.9rem;color:var(--gold);margin-bottom:12px;"></div>
+    <textarea class="quiz-ta" id="noteModalTa" placeholder="Write your note, thought, or reflection here…" style="min-height:100px;"></textarea>
+    <div class="quiz-actions" style="margin-top:12px;">
+      <button class="qbtn" onclick="saveNoteModal()">Save Note</button>
+      <button class="qbtn sec" onclick="deleteNoteModal()" id="noteDeleteBtn" style="display:none;">Delete</button>
+      <button class="qbtn sec" onclick="closeNoteModal()">Close</button>
     </div>
   </div>
 </div>
