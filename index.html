@@ -1287,7 +1287,17 @@
 // ── PAGE-SPECIFIC STUBS (will be filled in later stages) ─────────────────
 function renderBiblePage() {
   if(typeof BIBLE === 'undefined') {
-    document.getElementById('bibleMainArea').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);">Bible data loading... make sure bible.js is in the same folder.</div>';
+    // bible.js still loading - retry after a short delay
+    document.getElementById('bibleMainArea').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);"><div style="font-size:2rem;margin-bottom:12px;">📖</div><div style="font-family:'Cinzel',serif;color:var(--text);margin-bottom:8px;">Loading Bible...</div><div style="font-size:0.8rem;">This takes a second on first load.</div></div>';
+    setTimeout(() => {
+      if(typeof BIBLE !== 'undefined') {
+        renderBibleSidebar();
+        if(bibleCurrentBook) renderBibleChapter();
+        else showBibleWelcome();
+      } else {
+        document.getElementById('bibleMainArea').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);"><div style="font-size:0.9rem;">Still loading... try refreshing in a few seconds.</div></div>';
+      }
+    }, 2000);
     return;
   }
   renderBibleSidebar();
