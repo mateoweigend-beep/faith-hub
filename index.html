@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Faith Hub">
+<meta name="theme-color" content="#d4a843">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<title>Mateo's Faith Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ═══ HOME ═══ -->
+  <div id="page-home" class="page active">
+
+    <!-- Hero -->
+    <div class="home-hero">
+      <div class="home-greeting" id="homeGreeting">Good morning,</div>
+      <div class="home-name fade-up">Hey <span>Mateo</span> 👋</div>
+      <div style="font-size:0.76rem;color:var(--muted);margin-top:6px;font-style:italic;" id="homeSubGreeting"></div>
+
+      <!-- Streak -->
+      <div class="streak-badge fade-up fade-up-1" onclick="goTo('stats')">
+        <span class="streak-flame">🔥</span>
+        <span class="streak-num" id="streakNum">0</span>
+        <div>
+          <span class="streak-label">day streak</span>
+          <span class="streak-sub" id="streakLongest">Best: 0</span>
+        </div>
+        <span style="font-size:0.7rem;color:var(--muted);margin-left:4px;">→</span>
+      </div>
+
+      <!-- Level badge -->
+      <div style="margin-top:10px;">
+        <span id="levelBadge" style="font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:var(--gold-dim);padding:4px 12px;border-radius:20px;cursor:pointer;" onclick="goTo('stats')">Seedling · 0 XP</span>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions fade-up fade-up-2">
+      <div class="qa-btn" onclick="goTo('bible')">
+        <span class="qa-icon">📖</span>
+        <span class="qa-label">Read</span>
+      </div>
+      <div class="qa-btn" onclick="goTo('prayer')">
+        <span class="qa-icon">🙏</span>
+        <span class="qa-label">Pray</span>
+      </div>
+      <div class="qa-btn" onclick="goTo('journal')">
+        <span class="qa-icon">✍️</span>
+        <span class="qa-label">Journal</span>
+      </div>
+      <div class="qa-btn" onclick="goTo('memory')">
+        <span class="qa-icon">🧠</span>
+        <span class="qa-label">Memorize</span>
+      </div>
+    </div>
+
+    <!-- Today Card -->
+    <div style="padding:0 20px 0;margin-top:16px;" class="fade-up fade-up-2">
+      <div class="card">
+        <div class="card-label">Today</div>
+        <div class="today-items">
+          <div class="today-item" onclick="goTo('bible')">
+            <span class="today-item-icon">📖</span>
+            <span class="today-item-label">Read</span>
+            <span class="today-item-val" id="todayRead">—</span>
+          </div>
+          <div class="today-item" onclick="goTo('prayer')">
+            <span class="today-item-icon">🙏</span>
+            <span class="today-item-label">Prayed</span>
+            <span class="today-item-val" id="todayPrayed">—</span>
+          </div>
+          <div class="today-item" onclick="goTo('stats')">
+            <span class="today-item-icon">🔥</span>
+            <span class="today-item-label">Streak</span>
+            <span class="today-item-val" id="todayStreak">0</span>
+          </div>
+          <div class="today-item" onclick="goTo('stats')">
+            <span class="today-item-icon">⚡</span>
+            <span class="today-item-label">XP</span>
+            <span class="today-item-val" id="todayXP">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reading Plan Banner -->
+    <div class="plan-banner" id="planBanner" style="display:none;"></div>
+
+    <!-- Verse of the Day -->
+    <div class="votd-card fade-up fade-up-3">
+      <div class="votd-label">✦ Verse of the Day</div>
+      <div class="votd-text" id="votdText"></div>
+      <div class="votd-ref" id="votdRef"></div>
+      <div class="votd-day" id="votdDay"></div>
+      <div class="votd-actions">
+        <button class="btn btn-ghost btn-sm" onclick="shareVotd()">Share ↗</button>
+        <button class="btn btn-ghost btn-sm" onclick="pinVotd()">📌 Pin</button>
+      </div>
+    </div>
+
+    <!-- Pinned Verses -->
+    <div class="pinned-section fade-up fade-up-4">
+      <div class="pinned-header">
+        <span class="pinned-title">📌 Pinned Verses</span>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('pinVerseModal')">Edit</button>
+      </div>
+      <div id="pinnedContainer"></div>
+    </div>
+
+    <!-- Legacy Statement -->
+    <div style="margin:0 20px 16px;" id="legacySection">
+      <div class="card card-gold" id="legacyCard" style="cursor:pointer;" onclick="openModal('legacyModal')">
+        <div class="card-label">My Legacy</div>
+        <div id="legacyText" style="font-family:'Crimson Pro',serif;font-size:1rem;font-style:italic;color:var(--text2);line-height:1.5;">
+          What do you want your life to stand for? Tap to write your legacy statement.
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom padding -->
+    <div style="height:20px;"></div>
+  </div>
+
+  <!-- ═══ BIBLE ═══ -->
+  <div id="page-bible" class="page" style="padding:0;overflow:hidden;">
+    <!-- Bible header -->
+    <div style="position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px;">
+      <button class="header-btn" onclick="toggleBibleSidebar()" style="padding:7px 10px;">☰</button>
+      <span style="font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold);flex:1;">Bible</span>
+      <div class="bible-page-tools">
+        <button class="header-btn" onclick="openModal('quickLookupModal')">🔍</button>
+        <button class="header-btn" onclick="showBookmarks()">🔖</button>
+        <button class="header-btn" onclick="showFlaggedVerses()">🚩</button>
+        <button class="header-btn" onclick="showBibleSearch()">Search</button>
+      </div>
+    </div>
+    <!-- Bible layout -->
+    <div class="bible-layout" style="height:calc(100vh - var(--tab-h) - 50px);">
+      <div class="bible-sidebar" id="bibleSidebar"></div>
+      <div class="bible-reading-area" id="bibleReadingArea">
+        <div id="bibleMainArea"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PRAYER ═══ -->
+  <div id="page-prayer" class="page">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div><div class="page-title">Prayer</div><div class="page-subtitle">Talk to God</div></div>
+        <div style="display:flex;gap:6px;">
+          <button class="header-btn" onclick="openACTS()">ACTS</button>
+          <button class="header-btn" onclick="openPsalmPrayer()">🕊 Psalms</button>
+        </div>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <!-- Breath Prayer -->
+      <div class="breath-prayer-card">
+        <div class="breath-prayer-label">🌬️ Breath Prayer of the Day</div>
+        <div class="breath-prayer-text" id="breathPrayerText"></div>
+        <div class="breath-prayer-sub">Repeat this slowly throughout your day</div>
+      </div>
+
+      <!-- Today: Pray For Someone -->
+      <div class="card" style="margin-bottom:16px;" id="prayForPersonCard"></div>
+
+      <!-- Prayer Tools Row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
+        <div class="qa-btn" onclick="openModal('prayerTimerModal')">
+          <span class="qa-icon">⏱️</span>
+          <span class="qa-label">Timer</span>
+        </div>
+        <div class="qa-btn" onclick="openACTS()">
+          <span class="qa-icon">🔤</span>
+          <span class="qa-label">ACTS</span>
+        </div>
+        <div class="qa-btn" onclick="openPsalmPrayer()">
+          <span class="qa-icon">📜</span>
+          <span class="qa-label">Psalms</span>
+        </div>
+      </div>
+
+      <!-- Section tabs -->
+      <div style="display:flex;gap:0;background:var(--surface);border-radius:var(--radius);padding:4px;margin-bottom:20px;">
+        <button class="prayer-tab-btn active" onclick="switchPrayerTab('preset',this)" style="flex:1;padding:8px;border:none;background:var(--gold);color:var(--bg);border-radius:8px;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">Prayer Points</button>
+        <button class="prayer-tab-btn" onclick="switchPrayerTab('custom',this)" style="flex:1;padding:8px;border:none;background:none;color:var(--muted);border-radius:8px;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">My Prayers</button>
+        <button class="prayer-tab-btn" onclick="switchPrayerTab('worship',this)" style="flex:1;padding:8px;border:none;background:none;color:var(--muted);border-radius:8px;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">Worship</button>
+      </div>
+
+      <!-- PRESET PRAYERS TAB -->
+      <div id="prayerTabPreset">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">
+            <span class="prayer-swipe-hint">← swipe card to log prayer</span>
+          </div>
+        </div>
+        <div class="prayer-filter-row">
+          <button class="prayer-filter-btn active" onclick="filterPrayer('all',this)">All</button>
+          <button class="prayer-filter-btn" onclick="filterPrayer('faith',this)">Faith</button>
+          <button class="prayer-filter-btn" onclick="filterPrayer('family',this)">Family</button>
+          <button class="prayer-filter-btn" onclick="filterPrayer('school',this)">School</button>
+          <button class="prayer-filter-btn" onclick="filterPrayer('strength',this)">Strength</button>
+          <button class="prayer-filter-btn" onclick="filterPrayer('others',this)">Others</button>
+        </div>
+        <div class="prayer-card-grid" id="presetPrayerGrid"></div>
+      </div>
+
+      <!-- CUSTOM PRAYERS TAB -->
+      <div id="prayerTabCustom" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div style="font-size:0.82rem;color:var(--muted);" id="answeredRate"></div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('addPrayerModal')">+ Add Prayer</button>
+        </div>
+        <div class="prayer-swipe-hint">← swipe to log · → swipe to mark answered</div>
+        <div id="customPrayerList"></div>
+      </div>
+
+      <!-- WORSHIP TAB -->
+      <div id="prayerTabWorship" style="display:none;">
+        <div id="worshipContent"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ JOURNAL ═══ -->
+  <div id="page-journal" class="page">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div>
+          <div class="page-title">Journal</div>
+          <div class="page-subtitle" id="journalStatLine">0 entries</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="header-btn" onclick="exportJournalPDF()">Export</button>
+          <button class="btn btn-primary btn-sm" onclick="openNewEntry('regular')">+ Write</button>
+        </div>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <!-- Today prompt -->
+      <div class="journal-prompt-card" onclick="openNewEntry('regular')">
+        <div class="journal-prompt-label">💡 Today's Prompt — tap to write</div>
+        <div class="journal-prompt-text" id="journalTodayPrompt"></div>
+      </div>
+
+      <!-- Entry type quick buttons -->
+      <div class="journal-type-row">
+        <div class="jt-btn" onclick="openNewEntry('regular')">
+          <span class="jt-icon">✍️</span>
+          <span class="jt-label">Journal</span>
+        </div>
+        <div class="jt-btn" onclick="openNewEntry('godShowedUp')">
+          <span class="jt-icon">✨</span>
+          <span class="jt-label">God Showed Up</span>
+        </div>
+        <div class="jt-btn" onclick="openNewEntry('verseFoundMe')">
+          <span class="jt-icon">📖</span>
+          <span class="jt-label">Verse Found Me</span>
+        </div>
+        <div class="jt-btn" onclick="openNewEntry('sermon')">
+          <span class="jt-icon">⛪</span>
+          <span class="jt-label">Sermon Notes</span>
+        </div>
+        <div class="jt-btn" onclick="openNewEntry('prayedAbout')">
+          <span class="jt-icon">🙏</span>
+          <span class="jt-label">I Prayed About This</span>
+        </div>
+        <div class="jt-btn" onclick="openNewEntry('letter')">
+          <span class="jt-icon">📨</span>
+          <span class="jt-label">Letter to Future Me</span>
+        </div>
+        <div class="jt-btn" onclick="openNewEntry('openWhen')">
+          <span class="jt-icon">🔖</span>
+          <span class="jt-label">Open When…</span>
+        </div>
+        <div class="jt-btn" onclick="openNewEntry('godShowedUp')">
+          <span class="jt-icon">💛</span>
+          <span class="jt-label">Gratitude</span>
+        </div>
+      </div>
+
+      <!-- Saved Verses -->
+      <div id="savedVersesSection" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);font-weight:500;">★ Saved Verses</div>
+          <button class="btn btn-ghost btn-sm" onclick="toggleSavedSection()">Show/Hide</button>
+        </div>
+        <div id="savedVersesList"></div>
+      </div>
+
+      <!-- Filter row -->
+      <div class="journal-filter-row">
+        <button class="journal-filter-btn active" onclick="setJournalFilter('all',this)">All</button>
+        <button class="journal-filter-btn" onclick="setJournalFilter('regular',this)">✍️ Journal</button>
+        <button class="journal-filter-btn" onclick="setJournalFilter('godShowedUp',this)">✨ God Showed Up</button>
+        <button class="journal-filter-btn" onclick="setJournalFilter('sermon',this)">⛪ Sermons</button>
+        <button class="journal-filter-btn" onclick="setJournalFilter('letter',this)">📨 Letters</button>
+        <button class="journal-filter-btn" onclick="setJournalFilter('openWhen',this)">🔖 Open When</button>
+      </div>
+
+      <!-- Entries list -->
+      <div id="journalEntriesList"></div>
+
+    </div>
+  </div>
+
+  <!-- ═══ STATS ═══ -->
+  <div id="page-stats" class="page">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div><div class="page-title">Stats</div><div class="page-subtitle">Your faith journey in numbers</div></div>
+        <button class="header-btn" onclick="openModal('weeklyReportModal');renderWeeklyReport()">Week Report</button>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <!-- Streak row -->
+      <div class="streak-cards-row">
+        <div class="streak-card">
+          <div class="sc-num" id="statsStreak">0</div>
+          <div class="sc-label">🔥 Streak</div>
+        </div>
+        <div class="streak-card">
+          <div class="sc-num" id="statsLongest">0</div>
+          <div class="sc-label">Best Ever</div>
+        </div>
+        <div class="streak-card">
+          <div class="sc-num" id="statsDays">0</div>
+          <div class="sc-label">Days Read</div>
+        </div>
+      </div>
+
+      <!-- XP / Level -->
+      <div class="stats-section" style="margin-bottom:14px;">
+        <div class="stats-section-title">⚡ Level & XP</div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+          <span style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);" id="statsLevel">Seedling</span>
+          <span style="font-size:0.82rem;color:var(--text2);" id="statsXP">0 XP</span>
+        </div>
+        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpProgressBar"></div></div>
+        <div style="font-size:0.7rem;color:var(--muted);" id="xpNextLevel"></div>
+      </div>
+
+      <!-- Your Bible in Numbers -->
+      <div class="wrapped-card" id="wrappedCard"></div>
+
+      <!-- Reading Heatmap -->
+      <div class="stats-section">
+        <div class="stats-section-title">📅 Reading Heatmap</div>
+        <div style="height:14px;margin-bottom:4px;" id="heatmapMonths"></div>
+        <div class="heatmap-wrap">
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+        </div>
+        <div class="hm-legend">
+          <div class="hm-legend-cell"></div><span>No reading</span>
+          <div class="hm-legend-cell active" style="margin-left:8px;"></div><span>Read</span>
+        </div>
+      </div>
+
+      <!-- Chapter Completion Map -->
+      <div class="stats-section">
+        <div class="stats-section-title">📖 Bible Completion Map</div>
+        <div id="completionMap"></div>
+      </div>
+
+      <!-- Mood Chart -->
+      <div class="stats-section">
+        <div class="stats-section-title">😊 Journal Mood Tracker</div>
+        <div id="moodChartArea"></div>
+      </div>
+
+      <!-- Top Books -->
+      <div class="stats-section">
+        <div class="stats-section-title">🌟 Most Highlighted Books</div>
+        <div id="topVersesList"></div>
+      </div>
+
+      <!-- Prayer Stats -->
+      <div class="stats-section">
+        <div class="stats-section-title">🙏 Prayer Stats</div>
+        <div id="prayerStatsList"></div>
+      </div>
+
+      <!-- Journal Stats -->
+      <div class="stats-section">
+        <div class="stats-section-title">✍️ Journal Stats</div>
+        <div id="journalStatsList"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ MEMORY VERSES ═══ -->
+  <div id="page-memory" class="page">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div><div class="page-title">Memory Verses</div><div class="page-subtitle">30 key verses to memorize</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openFlashcardAll()">🃏 All Cards</button>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <!-- Verse of the Week -->
+      <div class="vow-card" id="verseOfWeekCard"></div>
+
+      <!-- Filter row -->
+      <div class="mem-filter-row">
+        <button class="mem-filter-btn active" onclick="filterMemory('all',this)">All (30)</button>
+        <button class="mem-filter-btn" onclick="filterMemory('strength',this)">💪 Strength</button>
+        <button class="mem-filter-btn" onclick="filterMemory('faith',this)">✝ Faith</button>
+        <button class="mem-filter-btn" onclick="filterMemory('identity',this)">👤 Identity</button>
+        <button class="mem-filter-btn" onclick="filterMemory('wisdom',this)">🧠 Wisdom</button>
+        <button class="mem-filter-btn" onclick="filterMemory('gospel',this)">📖 Gospel</button>
+        <button class="mem-filter-btn" onclick="filterMemory('peace',this)">🕊️ Peace</button>
+        <button class="mem-filter-btn" onclick="filterMemory('character',this)">⭐ Character</button>
+      </div>
+
+      <!-- Verse list -->
+      <div id="memoryVerseList"></div>
+
+    </div>
+  </div>
+
+  <!-- ═══ CHAT ═══ -->
+  <div id="page-chat" class="page" style="padding:0;overflow:hidden;">
+    <div style="position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:0.95rem;color:var(--gold);">Ask the Bible</div>
+        <div style="font-size:0.7rem;color:var(--muted);">AI · grounded in scripture · requires internet</div>
+      </div>
+      <button class="header-btn" onclick="clearChat()">Clear</button>
+    </div>
+    <div class="chat-wrap">
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chatInput" placeholder="Ask anything about faith, the Bible, or life…" rows="1" onkeydown="handleChatKeydown(event)" oninput="autoresizeChat(this)"></textarea>
+        <button class="chat-send-btn" onclick="sendMessage()">↑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ DEVOTIONS ═══ -->
+  <div id="page-devotions" class="page">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div><div class="page-title">Devotionals</div></div>
+      </div>
+    </div>
+    <div class="page-content">
+      <!-- Tab switcher -->
+      <div class="devos-tabs">
+        <button class="devo-tab-btn active" onclick="switchDevoTab('characters',this)">👤 Characters</button>
+        <button class="devo-tab-btn" onclick="switchDevoTab('wwjd',this)">❓ WWJD</button>
+        <button class="devo-tab-btn" onclick="switchDevoTab('athlete',this)">🏈 Athlete</button>
+      </div>
+
+      <!-- Characters tab -->
+      <div id="devoTabCharacters">
+        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Tap any person to read their full profile, what they struggled with, and what God did through them.</div>
+        <div class="char-grid" id="characterGrid"></div>
+      </div>
+
+      <!-- WWJD tab -->
+      <div id="devoTabWwjd" style="display:none;">
+        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Real situations. What would Jesus actually do? Tap to reveal the answer.</div>
+        <div id="wwjdContent"></div>
+      </div>
+
+      <!-- Athlete tab -->
+      <div id="devoTabAthlete" style="display:none;">
+        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Short devotionals written specifically for athletes. Football, character, competition, and faith.</div>
+        <div id="devoList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TOOLS ═══ -->
+  <div id="page-tools" class="page">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div><div class="page-title">Tools</div><div class="page-subtitle">For your faith journey</div></div>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <div class="tools-grid">
+        <div class="tool-card" onclick="openModal('temptationModal');document.getElementById('temptationContent').innerHTML=renderTemptGrid()">
+          <div class="tool-card-icon">⚔️</div>
+          <div class="tool-card-name">Temptation Toolkit</div>
+          <div class="tool-card-desc">Scripture and steps for specific battles</div>
+        </div>
+        <div class="tool-card" onclick="startLifeVerseFinder()">
+          <div class="tool-card-icon">✝</div>
+          <div class="tool-card-name">Life Verse Finder</div>
+          <div class="tool-card-desc">Find the verse that defines your life</div>
+        </div>
+        <div class="tool-card" onclick="startGiftsQuiz()">
+          <div class="tool-card-icon">🎁</div>
+          <div class="tool-card-name">Spiritual Gifts Quiz</div>
+          <div class="tool-card-desc">Discover how God wired you</div>
+        </div>
+        <div class="tool-card" onclick="openModal('scriptureFearModal');renderScriptureFear()">
+          <div class="tool-card-icon">🛡️</div>
+          <div class="tool-card-name">Scripture Over Fear</div>
+          <div class="tool-card-desc">Name your fear, get God's answer</div>
+        </div>
+        <div class="tool-card" onclick="openModal('bibleSearchModal');showBibleSearch()">
+          <div class="tool-card-icon">🔍</div>
+          <div class="tool-card-name">Bible Search</div>
+          <div class="tool-card-desc">Search any word across all 66 books</div>
+        </div>
+        <div class="tool-card" onclick="openModal('quickLookupModal')">
+          <div class="tool-card-icon">⚡</div>
+          <div class="tool-card-name">Quick Lookup</div>
+          <div class="tool-card-desc">Jump to any verse instantly</div>
+        </div>
+      </div>
+
+      <!-- Flagged verses section -->
+      <div class="stats-section">
+        <div class="stats-section-title">🚩 Verses I Don't Understand</div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">Flag verses in the Bible reader to bring to your pastor Wednesday night.</div>
+        <button class="btn btn-ghost btn-sm" id="flaggedBtn" onclick="showFlaggedVerses()">View Flagged Verses</button>
+      </div>
+
+      <!-- Bookmarks section -->
+      <div class="stats-section">
+        <div class="stats-section-title">🔖 Bookmarks</div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">Double-tap any verse in the Bible reader to bookmark it.</div>
+        <button class="btn btn-ghost btn-sm" id="bookmarksBtn" onclick="showBookmarks()">View Bookmarks</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ SETTINGS ═══ -->
+  <div id="page-settings" class="page">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div><div class="page-title">Settings</div></div>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <div class="settings-section">
+        <div class="settings-label">Appearance</div>
+
+        <!-- Theme -->
+        <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
+          <div>
+            <div class="settings-row-label">Theme</div>
+            <div class="settings-row-sub">Choose your reading environment</div>
+          </div>
+          <div class="theme-options" style="width:100%;">
+            <div class="theme-opt theme-opt-dark active" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</div>
+            <div class="theme-opt theme-opt-light" data-theme="light" onclick="setTheme('light')">☀️ Light</div>
+            <div class="theme-opt theme-opt-sepia" data-theme="sepia" onclick="setTheme('sepia')">📜 Sepia</div>
+          </div>
+        </div>
+
+        <!-- Font Size -->
+        <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px;margin-top:6px;">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+            <div>
+              <div class="settings-row-label">Font Size</div>
+              <div class="settings-row-sub">Adjust Bible text size</div>
+            </div>
+            <span id="fontSizeVal" style="font-size:0.82rem;color:var(--gold);">16px</span>
+          </div>
+          <input type="range" class="font-slider" id="fontSizeSlider" min="13" max="22" value="16">
+          <div style="display:flex;justify-content:space-between;width:100%;font-size:0.72rem;color:var(--muted);">
+            <span>A</span><span style="font-size:1rem;">A</span><span style="font-size:1.3rem;">A</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Bible Reading</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Red Letter Mode</div>
+            <div class="settings-row-sub">Jesus's words highlighted in red</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="toggleRedLetter">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Your Data</div>
+        <div class="settings-row" style="cursor:pointer;" onclick="exportData()">
+          <div>
+            <div class="settings-row-label">Export All Data</div>
+            <div class="settings-row-sub">Download your notes, journal, highlights</div>
+          </div>
+          <span style="color:var(--muted);">↓</span>
+        </div>
+        <div class="settings-row" style="cursor:pointer;margin-top:6px;" onclick="clearData()">
+          <div>
+            <div class="settings-row-label" style="color:var(--red);">Clear All Data</div>
+            <div class="settings-row-sub">Reset everything — cannot be undone</div>
+          </div>
+          <span style="color:var(--red);">✕</span>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">About</div>
+        <div class="card" style="text-align:center;padding:20px;">
+          <div style="font-size:2rem;margin-bottom:8px;">✝</div>
+          <div style="font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold);margin-bottom:6px;">Mateo's Faith Hub</div>
+          <div style="font-size:0.75rem;color:var(--muted);line-height:1.6;">Built with love for your faith journey.<br>Victory City Church · Wednesday Youth<br><br>Stage 1 of 8</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ BOTTOM TAB BAR ═══ -->
+  <nav class="tab-bar">
+    <div class="tab-item active" data-page="home">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">Home</span>
+    </div>
+    <div class="tab-item" data-page="bible">
+      <span class="tab-icon">📖</span>
+      <span class="tab-label">Bible</span>
+    </div>
+    <div class="tab-item" data-page="prayer">
+      <span class="tab-icon">🙏</span>
+      <span class="tab-label">Prayer</span>
+    </div>
+    <div class="tab-item" data-page="journal">
+      <span class="tab-icon">✍️</span>
+      <span class="tab-label">Journal</span>
+    </div>
+    <div class="tab-item" data-page="more">
+      <span class="tab-icon">☰</span>
+      <span class="tab-label">More</span>
+    </div>
+  </nav>
+
+  <!-- ═══ MORE MENU ═══ -->
+  <div class="more-overlay" id="moreOverlay"></div>
+  <div class="more-menu" id="moreMenu">
+    <div style="font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">More</div>
+    <div class="more-menu-grid">
+      <div class="more-item" data-page="stats">
+        <span class="more-item-icon">📊</span>
+        <span class="more-item-label">Stats</span>
+      </div>
+      <div class="more-item" data-page="memory">
+        <span class="more-item-icon">🧠</span>
+        <span class="more-item-label">Verses</span>
+      </div>
+      <div class="more-item" data-page="chat">
+        <span class="more-item-icon">💬</span>
+        <span class="more-item-label">Ask Bible</span>
+      </div>
+      <div class="more-item" data-page="devotions">
+        <span class="more-item-icon">📚</span>
+        <span class="more-item-label">Devotions</span>
+      </div>
+      <div class="more-item" data-page="tools">
+        <span class="more-item-icon">🛠️</span>
+        <span class="more-item-label">Tools</span>
+      </div>
+      <div class="more-item" data-page="settings">
+        <span class="more-item-icon">⚙️</span>
+        <span class="more-item-label">Settings</span>
+      </div>
+      <div class="more-item" data-page="guide">
+        <span class="more-item-icon">📋</span>
+        <span class="more-item-label">How To Use</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TOAST ═══ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ═══ MILESTONE POPUP ═══ -->
+  <div class="milestone-popup" id="milestonePopup">
+    <div class="milestone-flame">🔥</div>
+    <div class="milestone-num" id="milestoneNum">7</div>
+    <div style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);">Day Streak!</div>
+    <div class="milestone-text" id="milestoneText"></div>
+    <button class="btn btn-primary milestone-close">Keep Going ✝</button>
+  </div>
+
+  <!-- ═══ MODAL: Legacy Statement ═══ -->
+  <div class="modal-overlay center" id="legacyModal">
+    <div class="modal-box">
+      <div class="modal-title">My Legacy Statement</div>
+      <div class="modal-sub">One sentence — what do you want your life to stand for?</div>
+      <textarea class="input" id="legacyInput" placeholder="e.g. I want to be a man who loves God, leads others, and never backs down from what's right." style="min-height:100px;"></textarea>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn btn-primary btn-full" onclick="saveLegacy()">Save</button>
+        <button class="btn btn-ghost" onclick="closeModal('legacyModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MODAL: Pin Verse ═══ -->
+  <div class="modal-overlay center" id="pinVerseModal">
+    <div class="modal-box">
+      <div class="modal-title">📌 Pinned Verses</div>
+      <div class="modal-sub">Pin up to 3 verses to your home screen.</div>
+      <div id="pinnedEditList" style="margin-bottom:16px;"></div>
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">Add a verse:</div>
+      <input class="input" id="pinVerseRef" placeholder="Reference (e.g. John 3:16)" style="margin-bottom:8px;">
+      <textarea class="input" id="pinVerseText" placeholder="Verse text" style="min-height:70px;margin-bottom:12px;"></textarea>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary btn-full" onclick="addPinnedVerse()">Add</button>
+        <button class="btn btn-ghost" onclick="closeModal('pinVerseModal')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MODAL: Quick Lookup ═══ -->
+  <div class="modal-overlay center" id="quickLookupModal">
+    <div class="modal-box">
+      <div class="modal-title">🔍 Quick Verse Lookup</div>
+      <div class="modal-sub">Type a reference like "John 3:16" or "Psalm 23"</div>
+      <input class="input" id="quickLookupInput" placeholder="e.g. Romans 8:28" style="margin-bottom:12px;" onkeydown="if(event.key==='Enter')doQuickLookup()">
+      <button class="btn btn-primary btn-full" onclick="doQuickLookup()">Go →</button>
+    </div>
+  </div>
+
+
+  <!-- MODAL: Verse Action Menu -->
+  <div class="modal-overlay" id="verseMenuModal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="verse-menu-ref" id="verseMenuRef"></div>
+      <div id="verseMenuActions"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: Note -->
+  <div class="modal-overlay center" id="noteModal">
+    <div class="modal-box">
+      <div class="modal-title">📝 Verse Note</div>
+      <div style="font-size:0.8rem;color:var(--gold);margin-bottom:12px;" id="noteModalRef"></div>
+      <textarea class="input" id="noteModalTa" placeholder="Write your note, thought, or reflection…" style="min-height:110px;"></textarea>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn btn-primary" style="flex:1;" onclick="saveNoteModal()">Save Note</button>
+        <button class="btn btn-ghost" id="noteDeleteBtn" onclick="deleteNoteModal()">Delete</button>
+        <button class="btn btn-ghost" onclick="closeModal('noteModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Cross References -->
+  <div class="modal-overlay center" id="crossRefsModal">
+    <div class="modal-box">
+      <div class="modal-title">🔗 Cross References</div>
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;" id="crossRefsTitle"></div>
+      <div id="crossRefsContent"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:14px;" onclick="closeModal('crossRefsModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Bible Search -->
+  <div class="modal-overlay center" id="bibleSearchModal">
+    <div class="modal-box">
+      <div class="modal-title">🔍 Search the Bible</div>
+      <div class="modal-sub">Type any word or phrase</div>
+      <input class="input" id="bibleSearchInput" placeholder="e.g. do not fear" style="margin-bottom:10px;" onkeydown="if(event.key==='Enter')doBibleSearch()">
+      <button class="btn btn-primary btn-full" onclick="doBibleSearch()" style="margin-bottom:16px;">Search</button>
+      <div id="bibleSearchResults" style="max-height:50vh;overflow-y:auto;"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: Bookmarks -->
+  <div class="modal-overlay center" id="bookmarksModal">
+    <div class="modal-box">
+      <div class="modal-title">🔖 Bookmarks</div>
+      <div class="modal-sub">Double-tap any verse to bookmark it</div>
+      <div id="bookmarksList" style="max-height:55vh;overflow-y:auto;"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal('bookmarksModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Flagged Verses -->
+  <div class="modal-overlay center" id="flaggedModal">
+    <div class="modal-box">
+      <div class="modal-title">🚩 Flagged Verses</div>
+      <div class="modal-sub">Verses you want to ask about</div>
+      <div id="flaggedList" style="max-height:55vh;overflow-y:auto;"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal('flaggedModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Comprehension Quiz -->
+  <div class="modal-overlay center" id="compQuizModal">
+    <div class="modal-box" style="max-height:88vh;overflow-y:auto;">
+      <div style="font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">📖 Comprehension Check</div>
+      <div class="modal-title" id="cqTitle"></div>
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:18px;font-style:italic;" id="cqPassage"></div>
+      <div id="cqQuestions"></div>
+      <div id="cqResult" style="display:none;margin-top:14px;"></div>
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button class="btn btn-primary" style="flex:1;" id="cqSubmitBtn" onclick="submitCompQuiz()">Check Answers</button>
+        <button class="btn btn-ghost" onclick="closeModal('compQuizModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Prayer Timer -->
+  <div class="modal-overlay center" id="prayerTimerModal">
+    <div class="modal-box" style="text-align:center;">
+      <div class="modal-title">⏱️ Prayer Timer</div>
+      <div class="modal-sub">Set a time, start praying</div>
+      <div class="prayer-timer-wrap">
+        <div class="timer-ring-wrap">
+          <svg class="timer-ring-svg" width="140" height="140">
+            <circle class="timer-ring-bg" cx="70" cy="70" r="52"/>
+            <circle class="timer-ring-progress" id="timerRing" cx="70" cy="70" r="52"/>
+          </svg>
+          <div class="timer-display">
+            <div class="timer-num" id="timerDisplay">5:00</div>
+            <div class="timer-status" id="timerStatus">Ready</div>
+          </div>
+        </div>
+        <div class="timer-presets">
+          <button class="btn btn-ghost btn-sm" onclick="setTimerMinutes(3)">3 min</button>
+          <button class="btn btn-ghost btn-sm" onclick="setTimerMinutes(5)">5 min</button>
+          <button class="btn btn-ghost btn-sm" onclick="setTimerMinutes(10)">10 min</button>
+          <button class="btn btn-ghost btn-sm" onclick="setTimerMinutes(15)">15 min</button>
+        </div>
+        <input type="hidden" id="timerMinutes" value="5">
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary" id="timerBtn" onclick="toggleTimer()">Start</button>
+          <button class="btn btn-ghost" onclick="resetTimer()">Reset</button>
+          <button class="btn btn-ghost" onclick="closeModal('prayerTimerModal')">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ACTS Prayer Builder -->
+  <div class="modal-overlay center" id="actsModal">
+    <div class="modal-box" style="max-height:88vh;overflow-y:auto;">
+      <div class="modal-title" id="actsTitle">✨ Adoration</div>
+      <div style="display:flex;justify-content:center;gap:12px;margin:14px 0;">
+        <div class="acts-step acts-step-active" id="acts-step-A">A</div>
+        <div class="acts-step" id="acts-step-C">C</div>
+        <div class="acts-step" id="acts-step-T">T</div>
+        <div class="acts-step" id="acts-step-S">S</div>
+      </div>
+      <div style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;line-height:1.5;" id="actsDesc"></div>
+      <div style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Tap a prompt to use it →</div>
+      <div id="actsPromptsList" style="margin-bottom:14px;"></div>
+      <textarea class="input" id="actsPrayerTa" placeholder="Your prayer here… (or just pray silently)" style="min-height:90px;margin-bottom:14px;"></textarea>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" id="actsPrevBtn" onclick="actsPrev()" style="display:none;">← Back</button>
+        <button class="btn btn-primary" style="flex:1;" id="actsNextBtn" onclick="actsNext()">Next →</button>
+        <button class="btn btn-ghost" onclick="closeModal('actsModal')">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Pray the Psalms -->
+  <div class="modal-overlay center" id="psalmPrayerModal">
+    <div class="modal-box">
+      <div class="modal-title" id="psalmPrayerTitle">Praying Psalm 23</div>
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:16px;" id="psalmPrayerProgress"></div>
+      <div class="psalm-verse-card">
+        <div class="psalm-verse-text" id="psalmPrayerVerse"></div>
+        <div class="psalm-verse-prompt" id="psalmPrayerPrompt"></div>
+      </div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;font-style:italic;">Take a moment and pray this out loud or in your heart.</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" style="flex:1;" id="psalmPrayerNext" onclick="psalmPrayerNext()">Next →</button>
+        <button class="btn btn-ghost" onclick="closeModal('psalmPrayerModal')">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Add Custom Prayer -->
+  <div class="modal-overlay center" id="addPrayerModal">
+    <div class="modal-box">
+      <div class="modal-title">🙏 New Prayer Request</div>
+      <div class="modal-sub">What are you believing God for?</div>
+      <textarea class="input" id="newPrayerRequest" placeholder="What do you need from God?" style="min-height:80px;margin-bottom:10px;"></textarea>
+      <textarea class="input" id="newPrayerNote" placeholder="Extra context (optional)" style="min-height:50px;margin-bottom:10px;"></textarea>
+      <select class="input" id="newPrayerCat" style="margin-bottom:14px;">
+        <option value="">No category</option>
+        <option value="faith">Faith</option>
+        <option value="family">Family</option>
+        <option value="school">School</option>
+        <option value="football">Football</option>
+        <option value="friends">Friends</option>
+        <option value="other">Other</option>
+      </select>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary btn-full" onclick="addCustomPrayer()">Add Prayer</button>
+        <button class="btn btn-ghost" onclick="closeModal('addPrayerModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Pray for People -->
+  <div class="modal-overlay center" id="prayForModal">
+    <div class="modal-box">
+      <div class="modal-title">🙏 Pray For People</div>
+      <div class="modal-sub">Add people you're actively interceding for</div>
+      <div id="prayForList" style="max-height:200px;overflow-y:auto;margin-bottom:16px;"></div>
+      <input class="input" id="prayForName" placeholder="Name" style="margin-bottom:8px;">
+      <input class="input" id="prayForNote" placeholder="What are you praying for them? (optional)" style="margin-bottom:12px;">
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary btn-full" onclick="addPrayForPerson()">Add Person</button>
+        <button class="btn btn-ghost" onclick="closeModal('prayForModal')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: New/Edit Entry -->
+  <div class="modal-overlay" id="newEntryModal">
+    <div class="modal-sheet" style="max-height:92vh;overflow-y:auto;">
+      <div class="modal-handle"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div id="entryTypeLabel" style="font-size:0.82rem;color:var(--gold);font-weight:500;">✍️ Journal Entry</div>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('newEntryModal')">Cancel</button>
+      </div>
+
+      <!-- Mood selector -->
+      <div style="margin-bottom:4px;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);">How are you feeling?</div>
+      <div class="mood-selector" id="moodSelector"></div>
+
+      <!-- Title (optional) -->
+      <input class="input" id="entryTitle" placeholder="Title (optional)" style="margin-bottom:10px;">
+
+      <!-- Prompt hint -->
+      <div style="font-size:0.72rem;color:var(--muted);font-style:italic;margin-bottom:8px;" id="entryPromptHint"></div>
+
+      <!-- Main text -->
+      <textarea class="input" id="entryText" placeholder="Write freely… God is listening." style="min-height:160px;margin-bottom:10px;font-family:'Crimson Pro',serif;font-size:1rem;line-height:1.7;"></textarea>
+
+      <!-- VERSE FOUND ME field -->
+      <div id="fieldVerse" style="display:none;">
+        <label class="entry-field-label">📖 What verse found you?</label>
+        <input class="input" id="entryVerse" placeholder="e.g. Romans 8:28" style="margin-bottom:10px;">
+      </div>
+
+      <!-- OPEN WHEN field -->
+      <div id="fieldOpenWhen" style="display:none;">
+        <label class="entry-field-label">🔖 Open when…</label>
+        <select class="input" id="openWhenTitle" style="margin-bottom:10px;">
+          <option value="Open when you feel like quitting">Open when you feel like quitting</option><option value="Open when you feel completely alone">Open when you feel completely alone</option><option value="Open when you win the championship">Open when you win the championship</option><option value="Open when someone lets you down">Open when someone lets you down</option><option value="Open when you're not sure God is real">Open when you're not sure God is real</option><option value="Open when you're proud of yourself">Open when you're proud of yourself</option><option value="Open when football season starts">Open when football season starts</option><option value="Open when you graduate high school">Open when you graduate high school</option><option value="Open when you make a big mistake">Open when you make a big mistake</option><option value="Open when life is really hard">Open when life is really hard</option>
+        </select>
+      </div>
+
+      <!-- LETTER field -->
+      <div id="fieldLetter" style="display:none;">
+        <label class="entry-field-label">📨 Open this letter on…</label>
+        <input type="date" class="input" id="letterOpenDate" style="margin-bottom:10px;">
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;">The letter will be locked until this date.</div>
+      </div>
+
+      <!-- SERMON NOTES fields -->
+      <div id="fieldSermon" style="display:none;">
+        <label class="entry-field-label">📅 Date</label>
+        <input type="date" class="input" id="sermonDateInput" style="margin-bottom:8px;">
+        <label class="entry-field-label">👤 Pastor / Speaker</label>
+        <input class="input" id="sermonPastor" placeholder="e.g. Pastor Marcus" style="margin-bottom:8px;">
+        <label class="entry-field-label">📚 Series</label>
+        <input class="input" id="sermonSeries" placeholder="Series name (optional)" style="margin-bottom:8px;">
+        <label class="entry-field-label">📖 Main Scripture</label>
+        <input class="input" id="sermonScripture" placeholder="e.g. Romans 8" style="margin-bottom:8px;">
+        <label class="entry-field-label">💡 Key Points (up to 3)</label>
+        <input class="input" id="sermonPoint1" placeholder="Point 1" style="margin-bottom:6px;">
+        <input class="input" id="sermonPoint2" placeholder="Point 2" style="margin-bottom:6px;">
+        <input class="input" id="sermonPoint3" placeholder="Point 3" style="margin-bottom:8px;">
+        <label class="entry-field-label">🎯 One thing I'll do differently</label>
+        <input class="input" id="sermonAction" placeholder="My action step this week" style="margin-bottom:10px;">
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="saveJournalEntry()">Save Entry</button>
+    </div>
+  </div>
+
+  <!-- MODAL: View Entry -->
+  <div class="modal-overlay" id="entryViewModal">
+    <div class="modal-sheet" style="max-height:90vh;overflow-y:auto;">
+      <div class="modal-handle"></div>
+      <div id="entryViewContent"></div>
+      <div style="display:flex;gap:8px;margin-top:20px;">
+        <button class="btn btn-ghost btn-sm" onclick="shareEntry(editingEntryId)">Share ↗</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--red);" onclick="confirmDeleteEntry(editingEntryId);closeModal('entryViewModal')">Delete</button>
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="closeModal('entryViewModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Weekly Report -->
+  <div class="modal-overlay center" id="weeklyReportModal">
+    <div class="modal-box">
+      <div class="modal-title">📊 Weekly Report</div>
+      <div id="weeklyReportContent"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:16px;" onclick="closeModal('weeklyReportModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Flashcard -->
+  <div class="modal-overlay" id="flashcardModal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div style="font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);">🃏 Flashcards</div>
+        <div id="flashcardCounter" style="font-size:0.78rem;color:var(--muted);"></div>
+      </div>
+      <div class="flashcard-area" id="flashcardArea" onclick="flipFlashcard()">
+        <div class="flashcard-inner" id="flashcardInner"></div>
+      </div>
+      <div class="fc-swipe-hint">← swipe left: next · swipe right: prev · tap: flip</div>
+      <div class="fc-nav" style="margin-top:14px;">
+        <button class="btn btn-ghost btn-sm" id="fcPrevBtn" onclick="prevFlashcard()">← Prev</button>
+        <button class="btn btn-primary btn-sm" onclick="flipFlashcard()">Flip Card</button>
+        <button class="btn btn-ghost btn-sm" id="fcNextBtn" onclick="nextFlashcard()">Next →</button>
+      </div>
+      <button class="btn btn-ghost btn-full" style="margin-top:10px;" onclick="closeModal('flashcardModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Memory Quiz -->
+  <div class="modal-overlay center" id="memQuizModal">
+    <div class="modal-box" style="max-height:88vh;overflow-y:auto;">
+      <div class="modal-title">📝 Memory Quiz</div>
+      <div class="quiz-verse-ref" id="quizVerseRef"></div>
+      <div class="quiz-verse-hint" id="quizVerseHint"></div>
+      <textarea class="input" id="memQuizInput" placeholder="Type the verse from memory… do your best!" style="min-height:100px;font-family:'Crimson Pro',serif;font-size:1rem;margin-bottom:12px;" onkeydown="if(event.ctrlKey&&event.key==='Enter')submitMemQuiz()"></textarea>
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;">Tip: Don't worry about perfect punctuation — just get the words right.</div>
+      <button class="btn btn-primary btn-full" id="memQuizSubmitBtn" onclick="submitMemQuiz()">Check It</button>
+      <div id="memQuizResult"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: Bible Character -->
+  <div class="modal-overlay" id="characterModal">
+    <div class="modal-sheet" style="max-height:90vh;overflow-y:auto;">
+      <div class="modal-handle"></div>
+      <div id="characterDetail"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:16px;" onclick="closeModal('characterModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Athlete Devo -->
+  <div class="modal-overlay" id="devoModal">
+    <div class="modal-sheet" style="max-height:90vh;overflow-y:auto;">
+      <div class="modal-handle"></div>
+      <div id="devoContent"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:16px;" onclick="closeModal('devoModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Temptation Toolkit -->
+  <div class="modal-overlay center" id="temptationModal">
+    <div class="modal-box" style="max-height:88vh;overflow-y:auto;">
+      <div class="modal-title">⚔️ Temptation Toolkit</div>
+      <div id="temptationContent"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:14px;" onclick="closeModal('temptationModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Life Verse Finder -->
+  <div class="modal-overlay center" id="lifeVerseModal">
+    <div class="modal-box" style="max-height:88vh;overflow-y:auto;">
+      <div class="modal-title">✝ Life Verse Finder</div>
+      <div class="modal-sub">Answer 4 questions to find your verse</div>
+      <div id="lifeVerseContent"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal('lifeVerseModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Spiritual Gifts -->
+  <div class="modal-overlay center" id="giftsModal">
+    <div class="modal-box" style="max-height:88vh;overflow-y:auto;">
+      <div class="modal-title">🎁 Spiritual Gifts Quiz</div>
+      <div class="modal-sub">12 questions · see how God wired you</div>
+      <div id="giftsContent"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal('giftsModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Scripture Over Fear -->
+  <div class="modal-overlay center" id="scriptureFearModal">
+    <div class="modal-box" style="max-height:88vh;overflow-y:auto;">
+      <div class="modal-title">🛡️ Scripture Over Fear</div>
+      <div class="modal-sub">Name your fear — get God's answer</div>
+      <div id="fearContent"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal('scriptureFearModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- ONBOARDING OVERLAY -->
+  <div class="onboarding-overlay" id="onboardingOverlay">
+    <div id="onboardingContent"></div>
+  </div>
+
+  <!-- ═══ GUIDE ═══ -->
+  <div id="page-guide" class="page">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div><div class="page-title">How To Use</div><div class="page-subtitle">Every feature explained</div></div>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <!-- GESTURES -->
+      <div class="guide-section">
+        <div class="guide-section-title">👆 Gestures</div>
+        <div class="guide-item"><span class="gi-action">Tap a verse</span><span class="gi-desc">Highlights it in your active color</span></div>
+        <div class="guide-item"><span class="gi-action">Double-tap a verse</span><span class="gi-desc">Instantly bookmarks it 🔖</span></div>
+        <div class="guide-item"><span class="gi-action">Long-press a verse</span><span class="gi-desc">Opens full action menu — highlight, note, copy, share, pin, flag, cross-refs</span></div>
+        <div class="guide-item"><span class="gi-action">Swipe left/right in Bible</span><span class="gi-desc">Go to previous or next chapter</span></div>
+        <div class="guide-item"><span class="gi-action">Swipe down on a modal</span><span class="gi-desc">Closes it</span></div>
+        <div class="guide-item"><span class="gi-action">Swipe left on a prayer card</span><span class="gi-desc">Logs it as prayed instantly</span></div>
+        <div class="guide-item"><span class="gi-action">Swipe left on a custom prayer</span><span class="gi-desc">Log as prayed</span></div>
+        <div class="guide-item"><span class="gi-action">Swipe right on a custom prayer</span><span class="gi-desc">Mark as answered ✓</span></div>
+        <div class="guide-item"><span class="gi-action">Swipe left on a journal entry</span><span class="gi-desc">Delete it</span></div>
+        <div class="guide-item"><span class="gi-action">Swipe right on a journal entry</span><span class="gi-desc">Share it</span></div>
+        <div class="guide-item"><span class="gi-action">Swipe left/right on flashcards</span><span class="gi-desc">Next or previous card</span></div>
+        <div class="guide-item"><span class="gi-action">Tap a flashcard</span><span class="gi-desc">Flip it</span></div>
+      </div>
+
+      <!-- BIBLE READER -->
+      <div class="guide-section">
+        <div class="guide-section-title">📖 Bible Reader</div>
+        <div class="guide-item"><span class="gi-action">☰ button</span><span class="gi-desc">Opens/closes the book sidebar</span></div>
+        <div class="guide-item"><span class="gi-action">🔍 button</span><span class="gi-desc">Search any word or phrase across all 66 books</span></div>
+        <div class="guide-item"><span class="gi-action">🔖 button</span><span class="gi-desc">View all your bookmarks</span></div>
+        <div class="guide-item"><span class="gi-action">🚩 button</span><span class="gi-desc">View verses you flagged as confusing — bring these to your pastor Wednesday</span></div>
+        <div class="guide-item"><span class="gi-action">Highlight colors</span><span class="gi-desc">Yellow = Promise · Blue = Command · Green = Encouragement · Pink = Conviction</span></div>
+        <div class="guide-item"><span class="gi-action">Gold progress bar</span><span class="gi-desc">Shows how far through the chapter you are</span></div>
+        <div class="guide-item"><span class="gi-action">Chapter Notes</span><span class="gi-desc">Big text area at the bottom of every chapter — write your overall thoughts</span></div>
+        <div class="guide-item"><span class="gi-action">Mark Chapter Read</span><span class="gi-desc">Fills in the completion map, adds to your streak, earns XP</span></div>
+        <div class="guide-item"><span class="gi-action">Take the Quiz button</span><span class="gi-desc">3 comprehension questions after reading — earns XP based on score</span></div>
+        <div class="guide-item"><span class="gi-action">Book Introduction card</span><span class="gi-desc">Shows on chapter 1 of every book — author, date, theme, what to look for</span></div>
+        <div class="guide-item"><span class="gi-action">Chapter Summary card</span><span class="gi-desc">Plain-English summary before you read — available for key chapters</span></div>
+        <div class="guide-item"><span class="gi-action">Red Letter Mode</span><span class="gi-desc">Turn on in Settings → Jesus's words appear in red in Matthew, Mark, John</span></div>
+      </div>
+
+      <!-- HOME -->
+      <div class="guide-section">
+        <div class="guide-section-title">🏠 Home</div>
+        <div class="guide-item"><span class="gi-action">🔥 Streak badge</span><span class="gi-desc">Tap to see full stats. Milestones at 3, 7, 14, 21, 30, 60, 90, 100 days</span></div>
+        <div class="guide-item"><span class="gi-action">Level badge</span><span class="gi-desc">Seedling → Seeker → Disciple → Warrior → Champion → Overcomer → Warrior of Faith</span></div>
+        <div class="guide-item"><span class="gi-action">Verse of the Day</span><span class="gi-desc">Changes every day. Tap Share to send it, tap Pin to keep it on your home screen</span></div>
+        <div class="guide-item"><span class="gi-action">📅 Day banner</span><span class="gi-desc">Your reading plan for today — tap to open that chapter directly</span></div>
+        <div class="guide-item"><span class="gi-action">📌 Pinned Verses</span><span class="gi-desc">Up to 3 verses always visible on home. Tap Edit to manage them</span></div>
+        <div class="guide-item"><span class="gi-action">Legacy Statement</span><span class="gi-desc">One sentence about what you want your life to stand for. Tap to write it</span></div>
+      </div>
+
+      <!-- PRAYER -->
+      <div class="guide-section">
+        <div class="guide-section-title">🙏 Prayer</div>
+        <div class="guide-item"><span class="gi-action">Breath Prayer</span><span class="gi-desc">A short 6-word prayer at the top — changes daily. Repeat it throughout your day</span></div>
+        <div class="guide-item"><span class="gi-action">Pray for Someone</span><span class="gi-desc">Features a different person from your list each day</span></div>
+        <div class="guide-item"><span class="gi-action">Prayer Points tab</span><span class="gi-desc">18 preset prayers with categories. Swipe left or tap Pray This to log it</span></div>
+        <div class="guide-item"><span class="gi-action">My Prayers tab</span><span class="gi-desc">Add your own requests. Swipe left = prayed, swipe right = answered</span></div>
+        <div class="guide-item"><span class="gi-action">Worship tab</span><span class="gi-desc">Pick your mood → get 5 worship songs with YouTube + Spotify links</span></div>
+        <div class="guide-item"><span class="gi-action">ACTS button</span><span class="gi-desc">Guided 4-step prayer — Adoration, Confession, Thanksgiving, Supplication</span></div>
+        <div class="guide-item"><span class="gi-action">🕊 Psalms button</span><span class="gi-desc">Prays through Psalm 23, 139, or 51 verse by verse with prompts</span></div>
+        <div class="guide-item"><span class="gi-action">⏱ Timer</span><span class="gi-desc">Set 3, 5, 10, or 15 minutes. Animated ring. Earns XP when complete</span></div>
+      </div>
+
+      <!-- JOURNAL -->
+      <div class="guide-section">
+        <div class="guide-section-title">✍️ Journal</div>
+        <div class="guide-item"><span class="gi-action">Today's Prompt</span><span class="gi-desc">A different reflection question every day — tap it to start writing</span></div>
+        <div class="guide-item"><span class="gi-action">✨ God Showed Up</span><span class="gi-desc">Log moments where you clearly saw God work</span></div>
+        <div class="guide-item"><span class="gi-action">📖 Verse Found Me</span><span class="gi-desc">Tag a verse that hit you unexpectedly with the story behind it</span></div>
+        <div class="guide-item"><span class="gi-action">⛪ Sermon Notes</span><span class="gi-desc">Structured notes — pastor, scripture, 3 points, one action step</span></div>
+        <div class="guide-item"><span class="gi-action">📨 Letter to Future Me</span><span class="gi-desc">Set a date — the letter locks until then</span></div>
+        <div class="guide-item"><span class="gi-action">🔖 Open When…</span><span class="gi-desc">Write entries for future hard moments — "open when you feel like quitting"</span></div>
+        <div class="guide-item"><span class="gi-action">Mood selector</span><span class="gi-desc">10 emoji moods logged with each entry — shows trends in your stats</span></div>
+        <div class="guide-item"><span class="gi-action">Export button</span><span class="gi-desc">Downloads all entries as an HTML file — open in browser and print as PDF</span></div>
+      </div>
+
+      <!-- MEMORY VERSES -->
+      <div class="guide-section">
+        <div class="guide-section-title">🧠 Memory Verses</div>
+        <div class="guide-item"><span class="gi-action">Verse of the Week</span><span class="gi-desc">New verse every Monday. Quiz yourself daily — tracks your best score</span></div>
+        <div class="guide-item"><span class="gi-action">☆ Save</span><span class="gi-desc">Star a verse to add it to your Saved Verses panel at the top</span></div>
+        <div class="guide-item"><span class="gi-action">🃏 Flashcard</span><span class="gi-desc">Front shows the reference, tap to flip and see the verse</span></div>
+        <div class="guide-item"><span class="gi-action">All Cards button</span><span class="gi-desc">Shuffled flashcard deck of all verses in the current filter</span></div>
+        <div class="guide-item"><span class="gi-action">📝 Quiz</span><span class="gi-desc">Type the verse from memory — gets a % match score, shows your best ever</span></div>
+        <div class="guide-item"><span class="gi-action">Progress bar on cards</span><span class="gi-desc">Shows your best quiz score for that verse — fills toward 100%</span></div>
+      </div>
+
+      <!-- STATS -->
+      <div class="guide-section">
+        <div class="guide-section-title">📊 Stats</div>
+        <div class="guide-item"><span class="gi-action">Your Faith in Numbers</span><span class="gi-desc">Chapters read, days in the Word, words of scripture, highlights, notes, prayers, journal entries</span></div>
+        <div class="guide-item"><span class="gi-action">Reading Heatmap</span><span class="gi-desc">52-week grid — every day you read shows gold. Like GitHub contributions</span></div>
+        <div class="guide-item"><span class="gi-action">Bible Completion Map</span><span class="gi-desc">Every book as a bar that fills as you read chapters. Shows % of the whole Bible</span></div>
+        <div class="guide-item"><span class="gi-action">Mood Tracker</span><span class="gi-desc">Bar chart of moods from your journal entries over time</span></div>
+        <div class="guide-item"><span class="gi-action">Week Report button</span><span class="gi-desc">Letter grade for the week — A+, A, B, C — with breakdown and encouragement</span></div>
+        <div class="guide-item"><span class="gi-action">XP bar</span><span class="gi-desc">Everything earns XP: reading (+10), highlights (+2), notes (+10), prayers (+15), journal (+20), quizzes (up to +30)</span></div>
+      </div>
+
+      <!-- DEVOTIONS -->
+      <div class="guide-section">
+        <div class="guide-section-title">📚 Devotionals</div>
+        <div class="guide-item"><span class="gi-action">👤 Characters tab</span><span class="gi-desc">David, Paul, Peter, Moses, Joseph, Elijah — full profiles with links to their story in the Bible</span></div>
+        <div class="guide-item"><span class="gi-action">❓ WWJD tab</span><span class="gi-desc">Real teenage scenarios — tap "What Would Jesus Do?" to reveal the answer</span></div>
+        <div class="guide-item"><span class="gi-action">🏈 Athlete tab</span><span class="gi-desc">6 devotionals written for athletes — cornerback life, coachability, handling losses, pre-game prayer</span></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="guide-section">
+        <div class="guide-section-title">🛠️ Tools</div>
+        <div class="guide-item"><span class="gi-action">⚔️ Temptation Toolkit</span><span class="gi-desc">7 categories (anger, pride, lust, jealousy, laziness, fear, doubt) — truth + scripture + practical steps</span></div>
+        <div class="guide-item"><span class="gi-action">✝ Life Verse Finder</span><span class="gi-desc">4 questions → finds your personal life verse → pin it to home</span></div>
+        <div class="guide-item"><span class="gi-action">🎁 Spiritual Gifts Quiz</span><span class="gi-desc">12 questions → reveals your top 3 spiritual gifts with full descriptions</span></div>
+        <div class="guide-item"><span class="gi-action">🛡️ Scripture Over Fear</span><span class="gi-desc">Pick your specific fear → get the exact verses that address it</span></div>
+      </div>
+
+      <!-- AI CHAT -->
+      <div class="guide-section">
+        <div class="guide-section-title">💬 Ask the Bible</div>
+        <div class="guide-item"><span class="gi-action">How it works</span><span class="gi-desc">Type any faith question and get a scripture-grounded answer written for you specifically</span></div>
+        <div class="guide-item"><span class="gi-action">Requires internet</span><span class="gi-desc">Won't work offline — needs wifi or cell data</span></div>
+        <div class="guide-item"><span class="gi-action">Suggested questions</span><span class="gi-desc">6 questions on the welcome screen to get you started</span></div>
+        <div class="guide-item"><span class="gi-action">Enter key</span><span class="gi-desc">Sends the message — Shift+Enter for a new line</span></div>
+      </div>
+
+      <!-- XP TABLE -->
+      <div class="guide-section">
+        <div class="guide-section-title">⚡ How to Earn XP</div>
+        <div class="guide-item"><span class="gi-action">Mark chapter read</span><span class="gi-desc">+10 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Highlight a verse</span><span class="gi-desc">+2 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Write a verse note</span><span class="gi-desc">+10 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Write a chapter note</span><span class="gi-desc">+5 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Bookmark a verse</span><span class="gi-desc">+3 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Comprehension quiz</span><span class="gi-desc">+15–45 XP based on score</span></div>
+        <div class="guide-item"><span class="gi-action">Log a prayer</span><span class="gi-desc">+15 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Complete prayer timer</span><span class="gi-desc">+20 XP</span></div>
+        <div class="guide-item"><span class="gi-action">ACTS prayer</span><span class="gi-desc">+25 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Pray the Psalms</span><span class="gi-desc">+20 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Mark prayer answered</span><span class="gi-desc">+50 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Write journal entry</span><span class="gi-desc">+20–30 XP by type</span></div>
+        <div class="guide-item"><span class="gi-action">Memory verse quiz</span><span class="gi-desc">+5–30 XP based on score</span></div>
+        <div class="guide-item"><span class="gi-action">Save a verse</span><span class="gi-desc">+5 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Life verse finder</span><span class="gi-desc">+25 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Spiritual gifts quiz</span><span class="gi-desc">+30 XP</span></div>
+        <div class="guide-item"><span class="gi-action">WWJD scenario</span><span class="gi-desc">+10 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Read a devo</span><span class="gi-desc">+10 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Write legacy statement</span><span class="gi-desc">+20 XP</span></div>
+        <div class="guide-item"><span class="gi-action">Pin a verse to home</span><span class="gi-desc">+3 XP</span></div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+</div><!-- end #app -->
+
+<script src="red_letter.js"></script>
+<script src="app-core.js"></script>
+<script src="app-bible.js"></script>
+<script src="app-prayer.js"></script>
+<script src="app-journal.js"></script>
+<script src="app-stats.js"></script>
+<script src="app-memory.js"></script>
+<script src="app-chat.js"></script>
+<script src="app-devotions.js"></script>
+<script src="app-tools.js"></script>
+<script src="app-onboarding.js"></script>
+<script>
+// ── PAGE-SPECIFIC STUBS (will be filled in later stages) ─────────────────
+function renderBiblePage() {
+  if(typeof BIBLE === 'undefined') {
+    document.getElementById('bibleMainArea').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);">Bible data loading... make sure bible.js is in the same folder.</div>';
+    return;
+  }
+  renderBibleSidebar();
+  if(bibleCurrentBook) renderBibleChapter();
+  else showBibleWelcome();
+}
+
+function toggleBibleSidebar() {
+  const sb = document.getElementById('bibleSidebar');
+  sb.classList.toggle('open');
+}
+function renderPrayerPage() { if(typeof renderPresetPrayers==="function"){renderPresetPrayers();renderCustomPrayers();updateBreathPrayer();updatePrayForPerson();updateAnsweredRate();} }
+function renderJournalPage() { if(typeof renderJournalEntries==="function"){renderJournalEntries();updateJournalStats();renderTodayPrompt();} }
+function renderMemoryPage() {
+  if(typeof renderVerseOfWeek==="function"){
+    renderVerseOfWeek();
+    renderSavedVerses();
+    renderMemoryVerseList();
+    setTimeout(setupFlashcardSwipe, 300);
+  }
+}
+function renderChatPage() {
+  if(typeof renderChatWelcome==="function" && chatHistory.length===0) renderChatWelcome();
+  else if(typeof renderChatMessages==="function") renderChatMessages();
+}
+function renderDevotionsPage() {
+  if(typeof renderCharacterGrid==="function") {
+    renderCharacterGrid();
+    renderWWJD();
+    renderDevoList();
+  }
+}
+function renderGuidePage() { /* static content */ }
+function renderToolsPage() {
+  const fb = document.getElementById('flaggedBtn');
+  if(fb) fb.textContent = 'View Flagged Verses (' + STATE.iDontUnderstand.length + ')';
+  const bb = document.getElementById('bookmarksBtn');
+  if(bb) bb.textContent = 'View Bookmarks (' + STATE.bookmarks.length + ')';
+}
+
+function renderStatsPage() { if(typeof renderStatsHeader==="function") { renderStatsHeader();renderWrappedCard();renderHeatmap();renderCompletionMap();renderMoodChart();renderTopVerses();renderPrayerStats();renderJournalStats(); } }
+
+// ── HOME EXTRAS ───────────────────────────────────
+function shareVotd() {
+  const votd = getTodayVotd();
+  if(navigator.share) {
+    navigator.share({ text: `"${votd.t}" — ${votd.r}\n\nMateo's Faith Hub` });
+  } else {
+    navigator.clipboard.writeText(`"${votd.t}" — ${votd.r}`).then(() => showToast('Copied!'));
+  }
+}
+
+function pinVotd() {
+  const votd = getTodayVotd();
+  if(STATE.pinnedVerses.length >= 3) { showToast('Already have 3 pinned verses'); return; }
+  if(STATE.pinnedVerses.some(v => v.ref === votd.r)) { showToast('Already pinned!'); return; }
+  STATE.pinnedVerses.push({ref: votd.r, text: votd.t});
+  saveState('pinnedVerses');
+  renderPinnedVerses();
+  showToast('📌 Verse pinned to home!');
+  haptic('success');
+}
+
+function saveLegacy() {
+  const txt = document.getElementById('legacyInput').value.trim();
+  if(!txt) return;
+  STATE.legacyStatement = txt;
+  saveState('legacyStatement');
+  document.getElementById('legacyText').textContent = txt;
+  closeModal('legacyModal');
+  showToast('Legacy saved ✝');
+  addXP(20, 'Legacy statement written');
+}
+
+function addPinnedVerse() {
+  const ref = document.getElementById('pinVerseRef').value.trim();
+  const text = document.getElementById('pinVerseText').value.trim();
+  if(!ref || !text) { showToast('Enter both reference and text'); return; }
+  if(STATE.pinnedVerses.length >= 3) { showToast('Max 3 pinned verses'); return; }
+  STATE.pinnedVerses.push({ref, text});
+  saveState('pinnedVerses');
+  document.getElementById('pinVerseRef').value = '';
+  document.getElementById('pinVerseText').value = '';
+  renderPinnedEditList();
+  renderPinnedVerses();
+  showToast('📌 Pinned!');
+}
+
+function renderPinnedEditList() {
+  const el = document.getElementById('pinnedEditList');
+  const pinned = STATE.pinnedVerses;
+  if(!pinned.length) { el.innerHTML = '<div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">No pinned verses yet.</div>'; return; }
+  el.innerHTML = pinned.map((v,i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--surface2);border-radius:8px;margin-bottom:6px;">
+      <span style="font-size:0.82rem;color:var(--gold);flex:1;">${v.ref}</span>
+      <button onclick="removePinned(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:0.8rem;">✕ Remove</button>
+    </div>`).join('');
+}
+
+function removePinned(i) {
+  STATE.pinnedVerses.splice(i, 1);
+  saveState('pinnedVerses');
+  renderPinnedEditList();
+  renderPinnedVerses();
+  showToast('Unpinned');
+}
+
+// Open pin modal — populate list
+document.getElementById('pinVerseModal').addEventListener('click', e => {
+  if(e.target === document.getElementById('pinVerseModal')) return;
+});
+function openPinModal() {
+  renderPinnedEditList();
+  openModal('pinVerseModal');
+}
+
+// Quick lookup
+function doQuickLookup() {
+  const val = document.getElementById('quickLookupInput').value.trim();
+  if(!val) return;
+  const url = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(val)}&version=WEB`;
+  window.open(url, '_blank');
+  closeModal('quickLookupModal');
+}
+
+// Settings extras
+function exportData() {
+  const data = {
+    exported: new Date().toISOString(),
+    streak: STATE.streak,
+    highlights: STATE.highlights,
+    notes: STATE.notes,
+    chapterNotes: STATE.chapterNotes,
+    bookmarks: STATE.bookmarks,
+    journal: STATE.journal,
+    pinnedVerses: STATE.pinnedVerses,
+    legacyStatement: STATE.legacyStatement,
+    readDays: STATE.readDays,
+    xp: STATE.xp,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'faith-hub-backup.json';
+  a.click();
+  showToast('Data exported!');
+}
+
+function clearData() {
+  if(!confirm('Are you sure? This will delete ALL your notes, highlights, journal entries, and streak. This cannot be undone.')) return;
+  localStorage.clear();
+  location.reload();
+}
+
+// Prayer tab switcher
+function switchPrayerTab(tab, btn) {
+  document.querySelectorAll(".prayer-tab-btn").forEach(b => {
+    b.style.background = "none";
+    b.style.color = "var(--muted)";
+  });
+  if(btn) { btn.style.background = "var(--gold)"; btn.style.color = "var(--bg)"; }
+  ["preset","custom","worship"].forEach(t => {
+    const el = document.getElementById("prayerTab" + t.charAt(0).toUpperCase() + t.slice(1));
+    if(el) el.style.display = t === tab ? "block" : "none";
+  });
+  if(tab === "worship") renderWorshipSuggestions();
+  if(tab === "custom") { renderCustomPrayers(); updateAnsweredRate(); }
+  if(tab === "preset") renderPresetPrayers();
+}
+
+function setTimerMinutes(m) {
+  document.getElementById("timerMinutes").value = m;
+  prayerTimerSeconds = m * 60;
+  updateTimerDisplay();
+  document.getElementById("timerBtn").textContent = "Start";
+  document.getElementById("timerStatus").textContent = "Ready";
+  clearInterval(prayerTimerInterval);
+  prayerTimerRunning = false;
+}
+
+function switchDevoTab(tab, btn) {
+  document.querySelectorAll(".devo-tab-btn").forEach(b => {b.classList.remove("active"); b.style.background="none"; b.style.color="var(--muted)";});
+  if(btn) {btn.classList.add("active"); btn.style.background="var(--gold)"; btn.style.color="var(--bg)";}
+  ["Characters","Wwjd","Athlete"].forEach(t => {
+    const el = document.getElementById("devoTab"+t);
+    if(el) el.style.display = t.toLowerCase()===tab ? "block":"none";
+  });
+}
+
+function renderTemptGrid() {
+  const items = [
+    {key:'anger',icon:'😤',label:'Anger'},
+    {key:'pride',icon:'😏',label:'Pride'},
+    {key:'lust',icon:'🔥',label:'Lust'},
+    {key:'jealousy',icon:'💚',label:'Jealousy'},
+    {key:'laziness',icon:'😴',label:'Laziness'},
+    {key:'fear',icon:'😨',label:'Fear & Anxiety'},
+    {key:'doubt',icon:'🤔',label:'Doubt'},
+  ];
+  return '<div class="temptation-grid">' +
+    items.map(i => `<div class="tempt-btn" onclick="openTemptationTool('${i.key}')"><span class="tempt-icon">${i.icon}</span><span class="tempt-label">${i.label}</span></div>`).join('') +
+    '</div>';
+}
+
+// Prayer + journal log faith activity
+const _origLogPreset = typeof logPresetPrayer !== 'undefined' ? logPresetPrayer : null;
+
+// Wire journal saves to count as faith activity
+document.addEventListener('journalSaved', () => {
+  if(typeof logFaithActivity === 'function') logFaithActivity();
+});
+
+// Initialize legacy display
+window.addEventListener('DOMContentLoaded', () => {
+  if(STATE.legacyStatement) {
+    document.getElementById('legacyText').textContent = STATE.legacyStatement;
+    document.getElementById('legacyInput').value = STATE.legacyStatement;
+  }
+  document.getElementById('todayXP').textContent = STATE.xp;
+});
+</script>
+</body>
+</html>
