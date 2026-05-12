@@ -1284,20 +1284,49 @@
 <script src="app-tools.js"></script>
 <script src="app-onboarding.js"></script>
 <script>
+// ── BIBLE LOADER ─────────────────────────────────────────────────────────
+window.BIBLE = {};
+var BIBLE_FILES = ['bible-ot1a.js','bible-ot1b.js','bible-ot2.js','bible-ot3.js','bible-nt.js'];
+var BIBLE_LOADED = 0;
+function loadBibleFile(i) {
+  if(i >= BIBLE_FILES.length) {
+    console.log('All Bible files loaded. Books:', Object.keys(window.BIBLE).length);
+    if(typeof renderBibleSidebar==='function') {
+      renderBibleSidebar();
+      if(typeof bibleCurrentBook!=='undefined' && bibleCurrentBook) renderBibleChapter();
+      else if(typeof showBibleWelcome==='function') showBibleWelcome();
+    }
+    return;
+  }
+  var s = document.createElement('script');
+  s.src = BIBLE_FILES[i];
+  s.onload = function() { BIBLE_LOADED++; loadBibleFile(i+1); };
+  s.onerror = function() {
+    console.error('Failed:', BIBLE_FILES[i]);
+    loadBibleFile(i+1);
+  };
+  document.head.appendChild(s);
+}
+loadBibleFile(0);
+
 // ── PAGE-SPECIFIC STUBS (will be filled in later stages) ─────────────────
 function renderBiblePage() {
   if(typeof BIBLE === 'undefined') {
-    // bible.js still loading - retry after a short delay
-    document.getElementById('bibleMainArea').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);"><div style="font-size:2rem;margin-bottom:12px;">📖</div><div style="font-family:'Cinzel',serif;color:var(--text);margin-bottom:8px;">Loading Bible...</div><div style="font-size:0.8rem;">This takes a second on first load.</div></div>';
-    setTimeout(() => {
+    var area = document.getElementById('bibleMainArea');
+    if(area) area.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);"><div style="font-size:2rem;margin-bottom:12px;">📖</div><div style="font-size:1.1rem;color:var(--text);margin-bottom:8px;">Loading Bible...</div><div style="font-size:0.8rem;">Large file — takes a few seconds on first load.</div></div>';
+    var tries = 0;
+    var check = setInterval(function() {
+      tries++;
       if(typeof BIBLE !== 'undefined') {
+        clearInterval(check);
         renderBibleSidebar();
         if(bibleCurrentBook) renderBibleChapter();
         else showBibleWelcome();
-      } else {
-        document.getElementById('bibleMainArea').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);"><div style="font-size:0.9rem;">Still loading... try refreshing in a few seconds.</div></div>';
+      } else if(tries > 30) {
+        clearInterval(check);
+        if(area) area.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);">Bible data could not load. Please refresh the page.</div>';
       }
-    }, 2000);
+    }, 500);
     return;
   }
   renderBibleSidebar();
